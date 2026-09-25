@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tusind Ord">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Tusind Ord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --paper:#F4F3F1; --card:#FFFFFF; --ink:#1B1719; --muted:#6F6669;
+  --edge:#E4DFDF; --edge-soft:#EEEAEA;
+  --accent:#C8102E; --accent-ink:#FFFFFF; --accent-soft:#F7E2E6;
+  --ok:#2E7D51; --ok-soft:#E3F0E9;
+  --shadow:0 1px 2px rgba(27,23,25,.06), 0 10px 26px rgba(27,23,25,.07);
+  --display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141213; --card:#1E1B1D; --ink:#F3EFF0; --muted:#9B9194;
+    --edge:#332E30; --edge-soft:#282325;
+    --accent:#FF6073; --accent-ink:#2A0A10; --accent-soft:#3A1F25;
+    --ok:#6DD39B; --ok-soft:#1E3129;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 10px 26px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141213; --card:#1E1B1D; --ink:#F3EFF0; --muted:#9B9194;
+  --edge:#332E30; --edge-soft:#282325;
+  --accent:#FF6073; --accent-ink:#2A0A10; --accent-soft:#3A1F25;
+  --ok:#6DD39B; --ok-soft:#1E3129;
+  --shadow:0 1px 2px rgba(0,0,0,.45), 0 10px 26px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5; -webkit-text-size-adjust:100%}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+.app{min-height:100%; display:flex; flex-direction:column}
+.wrap{width:100%; max-width:640px; margin:0 auto; padding-inline:16px}
+
+.topbar{
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+  background:var(--paper); background:color-mix(in srgb, var(--paper) 88%, transparent);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--edge-soft);
+}
+.topbar .wrap{display:flex; align-items:center; gap:10px; padding-block:12px}
+.mark{font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:-.01em}
+.mark span{color:var(--accent)}
+.topbar .spacer{flex:1}
+.ghost{background:none; border:1px solid var(--edge); border-radius:999px; padding:6px 12px; font-size:13px; color:var(--muted)}
+.ghost:hover{border-color:var(--accent); color:var(--accent)}
+
+main{flex:1; padding-block:20px 40px}
+
+.lede{margin:4px 0 18px}
+.lede h1{font-family:var(--display); font-weight:700; font-size:clamp(25px,6.2vw,34px); line-height:1.12; margin:0 0 6px; letter-spacing:-.02em; text-wrap:balance}
+.lede p{margin:0; color:var(--muted); font-size:15px; max-width:52ch}
+
+.meter{display:flex; align-items:baseline; gap:10px; margin:0 0 6px; flex-wrap:wrap}
+.meter b{font-family:var(--mono); font-size:15px; font-variant-numeric:tabular-nums}
+.meter small{color:var(--muted); font-size:13px}
+.meter .streak{margin-left:auto; font-size:13px; color:var(--accent); font-weight:500}
+.bar{display:block; height:6px; border-radius:99px; background:var(--edge-soft); overflow:hidden}
+.bar i{display:block; height:100%; background:var(--accent); border-radius:99px; transition:width .4s ease}
+.bar.ok i{background:var(--ok)}
+.pace{margin:10px 0 0; font-size:13px; color:var(--muted)}
+
+.actions{display:flex; flex-direction:column; gap:10px; margin:20px 0 10px}
+.btn{
+  border:1px solid transparent; border-radius:14px; padding:15px 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  font-size:16px; font-weight:500; text-align:left; width:100%;
+}
+.btn .sub{font-size:13px; font-weight:400; opacity:.78; display:block; margin-top:2px}
+.btn .kicker{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; display:block; opacity:.7; margin-bottom:3px}
+.btn-primary{background:var(--accent); color:var(--accent-ink); box-shadow:var(--shadow)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-second{background:var(--card); border-color:var(--edge); color:var(--ink)}
+.btn-second:hover:not(:disabled){border-color:var(--accent)}
+.btn-done{background:var(--ok-soft); border-color:color-mix(in srgb, var(--ok) 35%, var(--edge)); color:var(--ink)}
+.btn-locked{background:transparent; border-color:var(--edge); color:var(--muted); border-style:dashed}
+.btn:disabled{cursor:default}
+.btn .arrow{font-family:var(--mono); opacity:.8}
+
+.studytop{display:flex; align-items:center; gap:12px; margin-bottom:14px}
+.studytop .title{font-family:var(--display); font-weight:600; font-size:16px}
+.studytop .count{margin-left:auto; font-family:var(--mono); font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums}
+
+.card{
+  background:var(--card); border:1px solid var(--edge); border-radius:20px; box-shadow:var(--shadow);
+  padding:30px 22px; min-height:290px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:14px; text-align:center; cursor:pointer;
+}
+.tag{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--edge); border-radius:99px; padding:3px 9px}
+.word{font-family:var(--display); font-weight:700; letter-spacing:-.025em; font-size:clamp(34px,10vw,52px); line-height:1.05; text-wrap:balance; margin:0}
+.speak{border:1px solid var(--edge); background:var(--paper); border-radius:99px; width:46px; height:46px; display:inline-flex; align-items:center; justify-content:center; padding:0; color:var(--accent); flex:none}
+.speak:hover{border-color:var(--accent); background:var(--accent-soft)}
+.speak.sm{width:32px; height:32px}
+.speak.big{width:96px; height:96px; background:var(--accent-soft); border-color:transparent}
+.speak svg{width:20px; height:20px}
+.speak.sm svg{width:15px; height:15px}
+.speak.big svg{width:40px; height:40px}
+.tapnote{font-size:13px; color:var(--muted)}
+
+.answer{display:flex; flex-direction:column; gap:14px; align-items:center; width:100%}
+.meanings{display:flex; flex-direction:column; gap:6px}
+.meanings div{display:flex; gap:10px; align-items:baseline; justify-content:center; flex-wrap:wrap}
+.flag{font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.06em; min-width:22px; text-align:right}
+.meanings p{margin:0; font-size:19px; font-weight:500}
+.example{border-top:1px solid var(--edge-soft); padding-top:14px; width:100%; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap}
+.example .da{font-family:var(--display); font-size:17px; font-weight:500}
+.example .en{color:var(--muted); font-size:14px; width:100%}
+
+.rate{display:flex; gap:10px; margin-top:16px}
+.rate button{flex:1; border-radius:14px; padding:15px 12px; border:1px solid var(--edge); background:var(--card); font-weight:500}
+.rate .again{color:var(--accent); border-color:color-mix(in srgb, var(--accent) 40%, var(--edge)); background:var(--accent-soft)}
+.rate .good{color:var(--ok); border-color:color-mix(in srgb, var(--ok) 40%, var(--edge)); background:var(--ok-soft)}
+
+.qcard{background:var(--card); border:1px solid var(--edge); border-radius:20px; box-shadow:var(--shadow); padding:26px 20px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; min-height:190px; justify-content:center}
+.qask{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+.qprompt{font-family:var(--display); font-weight:700; font-size:clamp(28px,8vw,42px); line-height:1.08; margin:0; letter-spacing:-.02em}
+.qprompt.small{font-size:clamp(20px,5.5vw,28px)}
+.qsub{color:var(--muted); font-size:15px; margin:0}
+.opts{display:flex; flex-direction:column; gap:9px; margin-top:14px}
+.opts.pair{flex-direction:row}
+.opts.pair .opt{justify-content:center; font-family:var(--display); font-size:22px; font-weight:600; padding:20px 12px}
+.opt{background:var(--card); border:1px solid var(--edge); border-radius:13px; padding:14px 16px; text-align:left; font-size:16px; display:flex; gap:11px; align-items:center}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .k{font-family:var(--mono); font-size:11px; color:var(--muted); width:14px; flex:none}
+.opt.right{background:var(--ok-soft); border-color:var(--ok); font-weight:500}
+.opt.wrong{background:var(--accent-soft); border-color:var(--accent)}
+.typerow{display:flex; gap:9px; margin-top:14px}
+.typerow input{flex:1; min-width:0; padding:14px 15px; border-radius:13px; border:1px solid var(--edge); background:var(--card); color:var(--ink); font:inherit; font-family:var(--display); font-size:18px}
+.typerow button{border-radius:13px; padding:0 20px; border:1px solid transparent; background:var(--accent); color:var(--accent-ink); font-weight:500}
+.verdict{margin-top:14px; border-radius:13px; padding:13px 15px; font-size:15px; display:flex; gap:11px; align-items:center; flex-wrap:wrap}
+.verdict.good{background:var(--ok-soft)}
+.verdict.bad{background:var(--accent-soft)}
+.verdict b{font-family:var(--display); font-size:17px}
+.verdict .nextbtn{margin-left:auto; border:1px solid var(--edge); background:var(--card); border-radius:99px; padding:7px 15px; font-size:14px}
+
+.result{text-align:center; padding:26px 0 10px}
+.result .big{font-family:var(--display); font-size:52px; font-weight:700; letter-spacing:-.03em; line-height:1}
+.result h2{font-family:var(--display); font-size:24px; margin:10px 0 6px}
+.result p{color:var(--muted); margin:0 0 20px}
+.missed{text-align:left; margin:18px 0 0}
+.missed h3{font-family:var(--display); font-size:13px; text-transform:uppercase; letter-spacing:.09em; margin:0 0 8px; color:var(--muted)}
+
+.done-panel{text-align:center; padding:34px 10px}
+.done-panel h2{font-family:var(--display); font-size:26px; margin:0 0 8px}
+.done-panel p{color:var(--muted); margin:0 0 22px}
+
+.note{background:var(--accent-soft); border-radius:12px; padding:12px 14px; font-size:13px; margin-bottom:16px; display:flex; gap:10px; align-items:flex-start}
+.note button{background:none; border:0; color:var(--muted); padding:0; font-size:18px; line-height:1}
+
+.search{width:100%; padding:13px 15px; border-radius:12px; border:1px solid var(--edge); background:var(--card); color:var(--ink); font:inherit; margin-bottom:14px}
+.rows{display:flex; flex-direction:column; border-top:1px solid var(--edge-soft)}
+.row{display:flex; align-items:center; gap:12px; padding:11px 2px; border-bottom:1px solid var(--edge-soft)}
+.row .idx{font-family:var(--mono); font-size:11px; color:var(--muted); width:34px; font-variant-numeric:tabular-nums}
+.row .t{flex:1; min-width:0}
+.row .t b{font-family:var(--display); font-weight:600; font-size:16px; display:block}
+.row .t span{font-size:13px; color:var(--muted); display:block; overflow-wrap:anywhere}
+.row .dot{width:7px; height:7px; border-radius:99px; background:var(--edge); flex:none}
+.row .dot.seen{background:var(--accent)}
+.row .dot.learned{background:var(--ok)}
+.sectionhead{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 12px}
+.sectionhead h2{font-family:var(--display); font-size:15px; font-weight:600; margin:0; text-transform:uppercase; letter-spacing:.09em}
+.sectionhead .hint{font-size:13px; color:var(--muted)}
+
+.voicerow{display:flex; align-items:center; gap:10px; margin:14px 0 0; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+.voicerow select{flex:1; min-width:0; font:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--edge); border-radius:10px; padding:8px 10px}
+footer{padding-block:0 26px; color:var(--muted); font-size:12.5px; text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <div class="topbar"><div class="wrap">
+    <div class="mark">Tusind <span>Ord</span></div>
+    <div class="spacer"></div>
+    <button class="ghost" id="navWords">All words</button>
+    <button class="ghost" id="navHome" hidden>Home</button>
+  </div></div>
+
+  <main>
+    <section id="home" class="wrap">
+      <div class="lede">
+        <h1>Danish, fifteen minutes at a time</h1>
+        <p>Warm up, clear what is due, and the app hands you new words when you have earned them.</p>
+      </div>
+
+      <div id="voiceNote" class="note" hidden>
+        <span id="voiceNoteText"></span>
+        <button id="voiceNoteClose" aria-label="Dismiss">&times;</button>
+      </div>
+      <div id="awayNote" class="note" hidden>
+        <span id="awayText"></span>
+        <button id="awayClose" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <div class="meter">
+        <b id="learnedCount">0 / 1000</b><small>words learned</small>
+        <span class="streak" id="streak" hidden></span>
+      </div>
+      <div class="bar ok"><i id="learnedBar" style="width:0%"></i></div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="warmBtn">
+          <span><span class="kicker">Every day</span><b id="warmLabel">Dagens opvarmning</b><span class="sub" id="warmSub"></span></span>
+          <span class="arrow">&rarr;</span>
+        </button>
+        <button class="btn btn-second" id="reviewBtn">
+          <span><span class="kicker">Revision</span><b id="reviewLabel"></b><span class="sub" id="reviewSub"></span></span>
+          <span class="arrow">&rarr;</span>
+        </button>
+        <button class="btn btn-second" id="newBtn">
+          <span><span class="kicker">New words</span><b id="newLabel"></b><span class="sub" id="newSub"></span></span>
+          <span class="arrow">&rarr;</span>
+        </button>
+        <button class="btn btn-second" id="testBtn">
+          <span><span class="kicker">Prøve</span><b id="testLabel"></b><span class="sub" id="testSub"></span></span>
+          <span class="arrow">&rarr;</span>
+        </button>
+      </div>
+      <p class="pace" id="pace"></p>
+      <div class="voicerow" id="voiceRow" hidden>
+        <label for="voiceSel">Danish voice</label>
+        <select id="voiceSel"></select>
+        <button class="ghost" id="voiceTry" type="button">Hear it</button>
+      </div>
+    </section>
+
+    <section id="study" class="wrap" hidden>
+      <div class="studytop">
+        <button class="ghost" id="exitStudy">&larr; Back</button>
+        <span class="title" id="studyTitle"></span>
+        <span class="count" id="studyCount"></span>
+      </div>
+      <div class="bar" style="margin-bottom:18px"><i id="studyBar" style="width:0%"></i></div>
+      <div id="cardArea">
+        <div class="card" id="card">
+          <span class="tag" id="cardTag"></span>
+          <p class="word" id="cardWord"></p>
+          <button class="speak" id="cardSpeak" aria-label="Hear the word">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          </button>
+          <span class="tapnote" id="tapNote">Tap the card to see the meaning</span>
+          <div class="answer" id="answer" hidden>
+            <div class="meanings">
+              <div><span class="flag">EN</span><p id="cardEn"></p></div>
+              <div><span class="flag">ES</span><p id="cardEs"></p></div>
+            </div>
+            <div class="example">
+              <span class="da" id="cardExDa"></span>
+              <button class="speak sm" id="exSpeak" aria-label="Hear the sentence">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+              </button>
+              <span class="en" id="cardExEn"></span>
+            </div>
+          </div>
+        </div>
+        <div class="rate" id="rateRow"><button id="showBtn">Show answer</button></div>
+        <div class="rate" id="judgeRow" hidden>
+          <button class="again" id="againBtn">Not yet</button>
+          <button class="good" id="goodBtn">I knew it</button>
+        </div>
+      </div>
+      <div id="donePanel" class="done-panel" hidden>
+        <h2 id="doneTitle">Godt klaret!</h2>
+        <p id="doneText"></p>
+        <div class="actions">
+          <button class="btn btn-primary" id="doneNext" hidden><span><b id="doneNextLabel"></b></span><span class="arrow">&rarr;</span></button>
+          <button class="btn btn-second" id="backHomeBtn"><span><b>Back to home</b></span><span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="wrap" hidden>
+      <div class="studytop">
+        <button class="ghost" id="exitQuiz">&larr; Back</button>
+        <span class="title" id="quizTitle"></span>
+        <span class="count" id="quizCount"></span>
+      </div>
+      <div class="bar" style="margin-bottom:18px"><i id="quizBar" style="width:0%"></i></div>
+      <div id="quizArea">
+        <div class="qcard">
+          <span class="qask" id="qAsk"></span>
+          <p class="qprompt" id="qPrompt"></p>
+          <p class="qsub" id="qSub" hidden></p>
+          <button class="speak" id="qSpeak" aria-label="Play the word" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          </button>
+        </div>
+        <div class="opts" id="qOpts"></div>
+        <form class="typerow" id="qType" hidden>
+          <input id="qInput" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Write it in Danish">
+          <button type="submit">Check</button>
+        </form>
+        <div class="verdict" id="qVerdict" hidden></div>
+      </div>
+      <div id="quizResult" class="result" hidden>
+        <div class="big" id="resScore"></div>
+        <h2 id="resTitle"></h2>
+        <p id="resText"></p>
+        <div class="actions">
+          <button class="btn btn-primary" id="resAgain"><span><b>Try it again</b></span><span class="arrow">&rarr;</span></button>
+          <button class="btn btn-second" id="resHome"><span><b>Back to home</b></span><span class="arrow">&rarr;</span></button>
+        </div>
+        <div class="missed" id="missedBox" hidden>
+          <h3>Worth another look</h3>
+          <div class="rows" id="missedRows"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="browse" class="wrap" hidden>
+      <div class="sectionhead"><h2>All 1000 words</h2><span class="hint" id="browseCount"></span></div>
+      <input class="search" id="search" type="search" placeholder="Search Danish, English or Spanish" autocomplete="off">
+      <div class="rows" id="rows"></div>
+    </section>
+  </main>
+
+  <footer class="wrap">In Safari, tap the share button and choose Add to Home Screen to open this like an app.<br>No sound? Check the side switch is not on silent.</footer>
+</div>
+
+<script>
+window.DANSK_WORDS=[["og","and","y","conj","Brød og smør.","Bread and butter."],["i","in","en","prep","Jeg bor i byen.","I live in the city."],["at","to / that","a / que","conj","Jeg tror at det regner.","I think that it is raining."],["det","it / that","eso / lo","pron","Det er koldt.","It is cold."],["er","is / are","es / son","v","Han er hjemme.","He is home."],["en","a (common)","un / una","art","En hund løber.","A dog runs."],["til","to","a / para","prep","Jeg går til skole.","I go to school."],["på","on","en / sobre","prep","Bogen ligger på bordet.","The book is on the table."],["de","they","ellos / ellas","pron","De kommer i morgen.","They come tomorrow."],["han","he","él","pron","Han hedder Lars.","His name is Lars."],["den","it / the","el / la","pron","Den er min.","It is mine."],["med","with","con","prep","Kom med mig.","Come with me."],["der","there / who","ahí / que","pron","Der er en kat.","There is a cat."],["af","of / off","de","prep","En kop af glas.","A cup of glass."],["for","for","para / por","prep","Det er for dig.","It is for you."],["som","as / which","como / que","conj","Manden som bor her.","The man who lives here."],["ikke","not","no","adv","Jeg forstår ikke.","I do not understand."],["var","was / were","era / fue","v","Det var sjovt.","It was fun."],["men","but","pero","conj","Lille men stærk.","Small but strong."],["et","a (neuter)","un / una","art","Et hus.","A house."],["har","has / have","tiene / tener","v","Jeg har tid.","I have time."],["om","about / if","sobre / si","prep","Vi taler om vejret.","We talk about the weather."],["jeg","I","yo","pron","Jeg hedder Anna.","My name is Anna."],["hun","she","ella","pron","Hun arbejder her.","She works here."],["nu","now","ahora","adv","Vi går nu.","We go now."],["over","over / above","sobre / encima","prep","Over broen.","Over the bridge."],["da","when / then","cuando","conj","Da jeg var barn.","When I was a child."],["fra","from","de / desde","prep","Jeg kommer fra Spanien.","I come from Spain."],["du","you","tú","pron","Hvad laver du?","What are you doing?"],["ud","out","fuera","adv","Vi går ud.","We go out."],["sin","his / her own","su","pron","Han tog sin jakke.","He took his jacket."],["dem","them","les / los","pron","Jeg kender dem.","I know them."],["os","us","nos","pron","Kom med os.","Come with us."],["op","up","arriba","adv","Stå op.","Stand up."],["man","one / you","uno / se","pron","Man skal spise.","One has to eat."],["hans","his","su (de él)","pron","Hans bil er rød.","His car is red."],["hvor","where / how","dónde / qué tan","adv","Hvor bor du?","Where do you live?"],["eller","or","o","conj","Te eller kaffe?","Tea or coffee?"],["hvad","what","qué","pron","Hvad er det?","What is that?"],["skal","shall / must","debe / va a","v","Jeg skal arbejde.","I have to work."],["selv","self / even","mismo / incluso","pron","Jeg gør det selv.","I do it myself."],["her","here","aquí","adv","Kom her.","Come here."],["alle","all / everyone","todos","pron","Alle er glade.","Everyone is happy."],["vil","will / want","quiere / va a","v","Jeg vil hjem.","I want to go home."],["blev","became / was","se hizo / fue","v","Han blev syg.","He became ill."],["kunne","could","podía","v","Jeg kunne ikke sove.","I could not sleep."],["ind","in / inside","adentro","adv","Kom ind.","Come in."],["når","when","cuando","conj","Når jeg har tid.","When I have time."],["være","to be","ser / estar","v","Det må være rigtigt.","That must be right."],["dog","however","sin embargo","adv","Det er dog dyrt.","It is expensive though."],["noget","something","algo","pron","Vil du have noget?","Do you want something?"],["ville","would / wanted","querría","v","Jeg ville gerne se det.","I would like to see it."],["deres","their","su (de ellos)","pron","Deres hus er stort.","Their house is big."],["efter","after","después de","prep","Efter middag.","After dinner."],["ned","down","abajo","adv","Sæt dig ned.","Sit down."],["skulle","should / had to","debería","v","Vi skulle gå.","We had to go."],["denne","this","este / esta","pron","Denne uge.","This week."],["end","than","que (comparativo)","conj","Større end mig.","Bigger than me."],["mig","me","me / mí","pron","Giv mig bogen.","Give me the book."],["også","also","también","adv","Jeg kommer også.","I am coming too."],["under","under / during","debajo / durante","prep","Under bordet.","Under the table."],["have","to have","tener","v","Vil du have mere?","Do you want more?"],["dag","day","día","n (en)","En god dag.","A good day."],["vi","we","nosotros","pron","Vi spiser sammen.","We eat together."],["mere","more","más","adv","Jeg vil have mere.","I want more."],["andre","others","otros","pron","De andre venter.","The others are waiting."],["kan","can","puede","v","Jeg kan svømme.","I can swim."],["må","may / must","puede / debe","v","Må jeg komme ind?","May I come in?"],["bare","just / only","solo","adv","Det er bare mig.","It is just me."],["gik","went / walked","fue / caminó","v","Vi gik hjem.","We walked home."],["hvis","if / whose","si","conj","Hvis du vil.","If you want."],["igen","again","otra vez","adv","Prøv igen.","Try again."],["mod","against / towards","contra / hacia","prep","Vi går mod byen.","We walk towards the city."],["ved","by / know","junto a / sabe","prep","Jeg ved det ikke.","I do not know."],["stor","big","grande","adj","Et stort hus.","A big house."],["god","good","bueno","adj","En god idé.","A good idea."],["lille","small","pequeño","adj","En lille by.","A small town."],["ny","new","nuevo","adj","En ny telefon.","A new phone."],["gammel","old","viejo","adj","En gammel bog.","An old book."],["første","first","primero","num","Den første dag.","The first day."],["sidste","last","último","adj","Sidste gang.","Last time."],["lang","long","largo","adj","En lang vej.","A long road."],["tid","time","tiempo","n (en)","Jeg har ikke tid.","I do not have time."],["år","year","año","n (et)","Et helt år.","A whole year."],["mand","man","hombre","n (en)","En ung mand.","A young man."],["kvinde","woman","mujer","n (en)","En venlig kvinde.","A friendly woman."],["barn","child","niño","n (et)","Et lille barn.","A small child."],["hus","house","casa","n (et)","Vores hus er gult.","Our house is yellow."],["by","city / town","ciudad","n (en)","København er en stor by.","Copenhagen is a big city."],["land","country","país","n (et)","Et koldt land.","A cold country."],["ting","thing","cosa","n (en)","En vigtig ting.","An important thing."],["sted","place","lugar","n (et)","Et godt sted.","A good place."],["gang","time (occasion)","vez","n (en)","En gang om ugen.","Once a week."],["hånd","hand","mano","n (en)","Giv mig din hånd.","Give me your hand."],["dør","door","puerta","n (en)","Luk døren.","Close the door."],["arbejde","work","trabajo","n (et)","Jeg går på arbejde.","I go to work."],["liv","life","vida","n (et)","Et godt liv.","A good life."],["hjem","home","casa / hogar","n (et)","Jeg tager hjem.","I am going home."],["ord","word","palabra","n (et)","Et svært ord.","A difficult word."],["del","part","parte","n (en)","En del af byen.","A part of the city."],["ja","yes","sí","adv","Ja, tak.","Yes, please."],["nej","no","no","adv","Nej, tak.","No, thank you."],["tak","thanks","gracias","n (en)","Mange tak.","Many thanks."],["hej","hi","hola","interj","Hej, hvordan går det?","Hi, how are you?"],["farvel","goodbye","adiós","interj","Farvel og god tur.","Goodbye and have a good trip."],["undskyld","sorry / excuse me","perdón","interj","Undskyld, jeg er sent på den.","Sorry, I am late."],["venligst","please","por favor","adv","Vent venligst her.","Please wait here."],["goddag","good day","buenos días","interj","Goddag, kan jeg hjælpe?","Hello, can I help?"],["godmorgen","good morning","buenos días","interj","Godmorgen, sov du godt?","Good morning, did you sleep well?"],["godnat","good night","buenas noches","interj","Godnat, vi ses i morgen.","Good night, see you tomorrow."],["hvordan","how","cómo","adv","Hvordan gør man det?","How do you do that?"],["hvorfor","why","por qué","adv","Hvorfor græder du?","Why are you crying?"],["hvem","who","quién","pron","Hvem er det?","Who is that?"],["hvilken","which","cuál","pron","Hvilken farve?","Which colour?"],["hvornår","when","cuándo","adv","Hvornår kommer toget?","When does the train come?"],["mange","many","muchos","adj","Mange mennesker.","Many people."],["meget","much / very","mucho / muy","adv","Meget godt.","Very good."],["lidt","a little","un poco","adv","Lidt mælk, tak.","A little milk, please."],["få","few / get","pocos / conseguir","adj","Få dage tilbage.","Few days left."],["nogle","some","algunos","pron","Nogle dage er hårde.","Some days are hard."],["hver","each / every","cada","pron","Hver dag.","Every day."],["begge","both","ambos","pron","Begge børn sover.","Both children are sleeping."],["ingen","nobody / no","nadie / ningún","pron","Ingen svarede.","Nobody answered."],["altid","always","siempre","adv","Han er altid sent på den.","He is always late."],["aldrig","never","nunca","adv","Jeg drikker aldrig kaffe.","I never drink coffee."],["ofte","often","a menudo","adv","Vi mødes ofte.","We meet often."],["sjældent","rarely","rara vez","adv","Jeg ser sjældent tv.","I rarely watch TV."],["snart","soon","pronto","adv","Vi ses snart.","See you soon."],["straks","immediately","enseguida","adv","Kom straks.","Come at once."],["tidligt","early","temprano","adv","Jeg står tidligt op.","I get up early."],["sent","late","tarde","adv","Det er sent.","It is late."],["stadig","still","todavía","adv","Han sover stadig.","He is still sleeping."],["allerede","already","ya","adv","Jeg har allerede spist.","I have already eaten."],["endnu","yet","aún","adv","Ikke endnu.","Not yet."],["måske","maybe","quizás","adv","Måske i morgen.","Maybe tomorrow."],["selvfølgelig","of course","por supuesto","adv","Selvfølgelig hjælper jeg.","Of course I will help."],["derfor","therefore","por eso","adv","Derfor gik jeg.","That is why I left."],["fordi","because","porque","conj","Jeg blev hjemme fordi jeg var træt.","I stayed home because I was tired."],["så","so / then","así que / luego","adv","Så går vi.","Then we go."],["heller","either / neither","tampoco","adv","Jeg kan heller ikke.","I cannot either."],["sammen","together","juntos","adv","Vi spiser sammen.","We eat together."],["alene","alone","solo","adj","Jeg bor alene.","I live alone."],["hurtigt","quickly","rápido","adv","Kør ikke for hurtigt.","Do not drive too fast."],["langsomt","slowly","despacio","adv","Tal langsomt, tak.","Speak slowly, please."],["godt","well / good","bien","adv","Det går godt.","It is going well."],["dårligt","badly","mal","adv","Jeg sov dårligt.","I slept badly."],["rigtig","right / real","correcto / muy","adj","Det er rigtigt.","That is right."],["forkert","wrong","incorrecto","adj","Svaret er forkert.","The answer is wrong."],["nem","easy","fácil","adj","Det er nemt.","It is easy."],["svær","difficult","difícil","adj","Dansk er svært.","Danish is difficult."],["vigtig","important","importante","adj","En vigtig besked.","An important message."],["sjov","fun / funny","divertido","adj","En sjov film.","A funny film."],["kedelig","boring","aburrido","adj","En kedelig bog.","A boring book."],["glad","happy","contento","adj","Jeg er glad i dag.","I am happy today."],["trist","sad","triste","adj","Hun ser trist ud.","She looks sad."],["træt","tired","cansado","adj","Jeg er meget træt.","I am very tired."],["sulten","hungry","hambriento","adj","Er du sulten?","Are you hungry?"],["tørstig","thirsty","sediento","adj","Jeg er tørstig.","I am thirsty."],["syg","ill","enfermo","adj","Han er syg i dag.","He is ill today."],["rask","healthy","sano","adj","Jeg er rask igen.","I am well again."],["varm","warm / hot","caliente","adj","Vandet er varmt.","The water is hot."],["kold","cold","frío","adj","Det er koldt ude.","It is cold outside."],["ung","young","joven","adj","En ung pige.","A young girl."],["dyr","expensive / animal","caro / animal","adj","Det er for dyrt.","That is too expensive."],["billig","cheap","barato","adj","En billig billet.","A cheap ticket."],["fri","free","libre","adj","Jeg har fri i dag.","I am off today."],["klar","ready / clear","listo / claro","adj","Er du klar?","Are you ready?"],["fuld","full","lleno","adj","Bussen er fuld.","The bus is full."],["tom","empty","vacío","adj","Glasset er tomt.","The glass is empty."],["åben","open","abierto","adj","Butikken er åben.","The shop is open."],["lukket","closed","cerrado","adj","Banken er lukket.","The bank is closed."],["gratis","free of charge","gratis","adj","Det er gratis.","It is free."],["hel","whole","entero","adj","En hel uge.","A whole week."],["halv","half","medio","adj","En halv time.","Half an hour."],["næste","next","próximo","adj","Næste uge.","Next week."],["samme","same","mismo","adj","Det samme sted.","The same place."],["anden","other / second","otro / segundo","adj","En anden dag.","Another day."],["egen","own","propio","adj","Mit eget værelse.","My own room."],["hele","all of / the whole","todo el","adj","Hele dagen.","The whole day."],["min","my","mi","pron","Min bil.","My car."],["din","your","tu","pron","Din taske.","Your bag."],["vores","our","nuestro","pron","Vores lejlighed.","Our flat."],["jer","you (plural)","vosotros","pron","Jeg ser jer i morgen.","I see you tomorrow."],["hende","her","la / ella","pron","Jeg kender hende.","I know her."],["ham","him","lo / él","pron","Jeg spurgte ham.","I asked him."],["dig","you (object)","te / ti","pron","Jeg venter på dig.","I am waiting for you."],["hendes","her (possessive)","su (de ella)","pron","Hendes bror.","Her brother."],["sit","its / his own","su","pron","Barnet fandt sit legetøj.","The child found its toy."],["intet","nothing","nada","pron","Intet er sikkert.","Nothing is certain."],["alt","everything","todo","pron","Alt er fint.","Everything is fine."],["enhver","anyone / every","cualquiera","pron","Enhver kan lære det.","Anyone can learn it."],["sådan","like that","así","adv","Gør det sådan.","Do it like that."],["kun","only","solo","adv","Kun to stykker.","Only two pieces."],["næsten","almost","casi","adv","Næsten færdig.","Almost finished."],["helt","completely","completamente","adv","Helt enig.","Completely agree."],["især","especially","sobre todo","adv","Især om vinteren.","Especially in winter."],["omkring","around","alrededor de","prep","Omkring klokken syv.","Around seven o'clock."],["mellem","between","entre","prep","Mellem to huse.","Between two houses."],["uden","without","sin","prep","Kaffe uden sukker.","Coffee without sugar."],["inden","before","antes de","prep","Inden vi går.","Before we go."],["gøre","to do","hacer","v","Hvad skal jeg gøre?","What should I do?"],["sige","to say","decir","v","Hvad sagde du?","What did you say?"],["se","to see","ver","v","Jeg kan se dig.","I can see you."],["komme","to come","venir","v","Kom og se.","Come and see."],["gå","to go / walk","ir / caminar","v","Vi går i parken.","We walk in the park."],["tage","to take","tomar","v","Tag en pause.","Take a break."],["give","to give","dar","v","Giv mig nøglen.","Give me the key."],["få","to get","recibir","v","Jeg fik et brev.","I got a letter."],["vide","to know (a fact)","saber","v","Jeg vil gerne vide det.","I would like to know."],["kende","to know (a person)","conocer","v","Jeg kender hende godt.","I know her well."],["tro","to believe","creer","v","Jeg tror på dig.","I believe in you."],["tænke","to think","pensar","v","Jeg tænker på dig.","I am thinking of you."],["synes","to think / find","parecer","v","Jeg synes det er godt.","I think it is good."],["spørge","to ask","preguntar","v","Må jeg spørge om noget?","May I ask something?"],["svare","to answer","responder","v","Han svarede ikke.","He did not answer."],["tale","to speak","hablar","v","Taler du dansk?","Do you speak Danish?"],["snakke","to chat","charlar","v","Vi snakker senere.","We will talk later."],["høre","to hear","oír","v","Jeg kan ikke høre dig.","I cannot hear you."],["lytte","to listen","escuchar","v","Lyt til musikken.","Listen to the music."],["læse","to read","leer","v","Jeg læser en bog.","I am reading a book."],["skrive","to write","escribir","v","Skriv dit navn her.","Write your name here."],["lære","to learn / teach","aprender","v","Jeg lærer dansk.","I am learning Danish."],["forstå","to understand","entender","v","Jeg forstår det nu.","I understand it now."],["huske","to remember","recordar","v","Husk din nøgle.","Remember your key."],["glemme","to forget","olvidar","v","Jeg glemte det.","I forgot it."],["arbejde","to work","trabajar","v","Hun arbejder hjemme.","She works at home."],["bo","to live / reside","vivir","v","Jeg bor i en lejlighed.","I live in a flat."],["leve","to live / be alive","vivir","v","De lever godt.","They live well."],["spise","to eat","comer","v","Vi spiser klokken syv.","We eat at seven."],["drikke","to drink","beber","v","Han drikker vand.","He drinks water."],["sove","to sleep","dormir","v","Jeg sover godt.","I sleep well."],["vågne","to wake up","despertarse","v","Jeg vågner klokken seks.","I wake up at six."],["stå","to stand","estar de pie","v","Han står ved døren.","He stands by the door."],["sidde","to sit","estar sentado","v","Sid ned.","Sit down."],["ligge","to lie","estar tumbado","v","Bogen ligger her.","The book lies here."],["løbe","to run","correr","v","Jeg løber hver morgen.","I run every morning."],["køre","to drive","conducir","v","Hun kører bil.","She drives a car."],["rejse","to travel","viajar","v","Vi rejser i juli.","We travel in July."],["flytte","to move","mudarse","v","Jeg flytter til Aarhus.","I am moving to Aarhus."],["købe","to buy","comprar","v","Jeg køber brød.","I buy bread."],["sælge","to sell","vender","v","De sælger cykler.","They sell bicycles."],["betale","to pay","pagar","v","Kan jeg betale med kort?","Can I pay by card?"],["koste","to cost","costar","v","Hvad koster det?","What does it cost?"],["bruge","to use","usar","v","Jeg bruger en app.","I use an app."],["lave","to make / do","hacer","v","Hvad laver du?","What are you doing?"],["bygge","to build","construir","v","De bygger et hus.","They are building a house."],["åbne","to open","abrir","v","Åbn vinduet.","Open the window."],["lukke","to close","cerrar","v","Luk døren.","Close the door."],["begynde","to begin","empezar","v","Filmen begynder nu.","The film begins now."],["slutte","to end","terminar","v","Mødet slutter klokken to.","The meeting ends at two."],["fortsætte","to continue","continuar","v","Vi fortsætter i morgen.","We continue tomorrow."],["stoppe","to stop","parar","v","Stop her.","Stop here."],["vente","to wait","esperar","v","Vent et øjeblik.","Wait a moment."],["prøve","to try","intentar","v","Prøv igen.","Try again."],["hjælpe","to help","ayudar","v","Kan du hjælpe mig?","Can you help me?"],["bede","to ask for / pray","pedir","v","Jeg beder om hjælp.","I ask for help."],["finde","to find","encontrar","v","Jeg kan ikke finde min telefon.","I cannot find my phone."],["lede","to search / lead","buscar","v","Jeg leder efter nøglen.","I am looking for the key."],["miste","to lose","perder","v","Jeg mistede min pung.","I lost my wallet."],["vinde","to win","ganar","v","De vandt kampen.","They won the match."],["tabe","to lose (a game)","perder","v","Vi tabte igen.","We lost again."],["vælge","to choose","elegir","v","Vælg en farve.","Choose a colour."],["beslutte","to decide","decidir","v","Jeg har besluttet mig.","I have decided."],["elske","to love","amar","v","Jeg elsker musik.","I love music."],["kunne lide","to like","gustar","v","Jeg kan lide kaffe.","I like coffee."],["hade","to hate","odiar","v","Jeg hader kulden.","I hate the cold."],["føle","to feel","sentir","v","Jeg føler mig godt tilpas.","I feel good."],["håbe","to hope","esperar","v","Jeg håber det går godt.","I hope it goes well."],["ønske","to wish","desear","v","Jeg ønsker dig held og lykke.","I wish you good luck."],["behøve","to need","necesitar","v","Du behøver ikke at komme.","You do not need to come."],["mangle","to lack / miss","faltar","v","Der mangler en stol.","A chair is missing."],["betyde","to mean","significar","v","Hvad betyder det?","What does that mean?"],["hedde","to be called","llamarse","v","Hvad hedder du?","What is your name?"],["bestille","to order / book","pedir / reservar","v","Jeg vil bestille en kaffe.","I would like to order a coffee."],["ringe","to call / ring","llamar","v","Ring til mig i aften.","Call me tonight."],["sende","to send","enviar","v","Jeg sender en mail.","I am sending an email."],["møde","to meet","encontrarse","v","Vi mødes klokken fem.","We meet at five."],["besøge","to visit","visitar","v","Jeg besøger min familie.","I visit my family."],["invitere","to invite","invitar","v","Vi inviterer dem til middag.","We invite them for dinner."],["danse","to dance","bailar","v","Vi dansede hele natten.","We danced all night."],["synge","to sing","cantar","v","Hun synger smukt.","She sings beautifully."],["spille","to play (game/music)","jugar / tocar","v","Jeg spiller guitar.","I play guitar."],["lege","to play (like a child)","jugar","v","Børnene leger ude.","The children play outside."],["grine","to laugh","reír","v","Vi grinede meget.","We laughed a lot."],["græde","to cry","llorar","v","Barnet græder.","The child is crying."],["smile","to smile","sonreír","v","Hun smiler altid.","She always smiles."],["kigge","to look","mirar","v","Kig her.","Look here."],["vise","to show","mostrar","v","Kan du vise mig vejen?","Can you show me the way?"],["huske på","to keep in mind","tener en cuenta","v","Husk på tiden.","Keep the time in mind."],["glæde sig","to look forward","ilusionarse","v","Jeg glæder mig til ferien.","I look forward to the holiday."],["blive","to become / stay","llegar a ser / quedarse","v","Bliv her.","Stay here."],["holde","to hold / keep","sostener","v","Hold min taske.","Hold my bag."],["sætte","to put / set","poner","v","Sæt det på bordet.","Put it on the table."],["lægge","to lay / put down","poner / acostar","v","Læg bogen der.","Lay the book there."],["putte","to put","meter","v","Put sukker i.","Put sugar in it."],["hente","to fetch","recoger","v","Jeg henter børnene.","I pick up the children."],["bringe","to bring","traer","v","Bring en stol.","Bring a chair."],["fylde","to fill","llenar","v","Fyld glasset.","Fill the glass."],["skifte","to change / switch","cambiar","v","Jeg skifter tog i Odense.","I change trains in Odense."],["ændre","to change","cambiar","v","Vi ændrer planen.","We change the plan."],["nul","zero","cero","num","Nul grader.","Zero degrees."],["en / et","one","uno","num","Kun en gang.","Only one time."],["to","two","dos","num","To kopper kaffe.","Two cups of coffee."],["tre","three","tres","num","Tre børn.","Three children."],["fire","four","cuatro","num","Fire uger.","Four weeks."],["fem","five","cinco","num","Klokken fem.","Five o'clock."],["seks","six","seis","num","Seks æg.","Six eggs."],["syv","seven","siete","num","Syv dage.","Seven days."],["otte","eight","ocho","num","Otte timer.","Eight hours."],["ni","nine","nueve","num","Ni personer.","Nine people."],["ti","ten","diez","num","Ti minutter.","Ten minutes."],["elleve","eleven","once","num","Elleve kroner.","Eleven kroner."],["tolv","twelve","doce","num","Tolv måneder.","Twelve months."],["tretten","thirteen","trece","num","Tretten år.","Thirteen years."],["fjorten","fourteen","catorce","num","Fjorten dage.","Fourteen days."],["femten","fifteen","quince","num","Femten minutter.","Fifteen minutes."],["seksten","sixteen","dieciséis","num","Seksten elever.","Sixteen pupils."],["sytten","seventeen","diecisiete","num","Sytten grader.","Seventeen degrees."],["atten","eighteen","dieciocho","num","Atten år.","Eighteen years."],["nitten","nineteen","diecinueve","num","Nitten kroner.","Nineteen kroner."],["tyve","twenty","veinte","num","Tyve minutter.","Twenty minutes."],["tredive","thirty","treinta","num","Tredive dage.","Thirty days."],["fyrre","forty","cuarenta","num","Fyrre personer.","Forty people."],["halvtreds","fifty","cincuenta","num","Halvtreds kroner.","Fifty kroner."],["tres","sixty","sesenta","num","Tres sekunder.","Sixty seconds."],["halvfjerds","seventy","setenta","num","Halvfjerds år.","Seventy years."],["firs","eighty","ochenta","num","Firs procent.","Eighty percent."],["halvfems","ninety","noventa","num","Halvfems grader.","Ninety degrees."],["hundrede","hundred","cien","num","Hundrede kroner.","A hundred kroner."],["tusind","thousand","mil","num","Tusind tak.","A thousand thanks."],["million","million","millón","n (en)","En million mennesker.","A million people."],["halvdelen","the half","la mitad","n (en)","Halvdelen er væk.","Half is gone."],["nummer","number","número","n (et)","Hvad er dit nummer?","What is your number?"],["mandag","Monday","lunes","n (en)","Vi ses på mandag.","See you on Monday."],["tirsdag","Tuesday","martes","n (en)","Tirsdag er travl.","Tuesday is busy."],["onsdag","Wednesday","miércoles","n (en)","Hver onsdag.","Every Wednesday."],["torsdag","Thursday","jueves","n (en)","Torsdag aften.","Thursday evening."],["fredag","Friday","viernes","n (en)","Endelig fredag.","Finally Friday."],["lørdag","Saturday","sábado","n (en)","Vi handler om lørdagen.","We shop on Saturdays."],["søndag","Sunday","domingo","n (en)","Søndag er fridag.","Sunday is a day off."],["januar","January","enero","n","Januar er kold.","January is cold."],["februar","February","febrero","n","I februar sner det.","In February it snows."],["marts","March","marzo","n","Foråret starter i marts.","Spring starts in March."],["april","April","abril","n","Det regner i april.","It rains in April."],["maj","May","mayo","n","I maj bliver det varmt.","In May it gets warm."],["juni","June","junio","n","Juni er lys.","June is bright."],["juli","July","julio","n","Vi holder ferie i juli.","We take holiday in July."],["august","August","agosto","n","August er varm.","August is warm."],["september","September","septiembre","n","Skolen starter i september.","School starts in September."],["oktober","October","octubre","n","Oktober er mørk.","October is dark."],["november","November","noviembre","n","November er våd.","November is wet."],["december","December","diciembre","n","Jul er i december.","Christmas is in December."],["uge","week","semana","n (en)","Næste uge.","Next week."],["måned","month","mes","n (en)","En måned mere.","One more month."],["time","hour","hora","n (en)","To timer.","Two hours."],["minut","minute","minuto","n (et)","Fem minutter.","Five minutes."],["sekund","second","segundo","n (et)","Et sekund.","One second."],["morgen","morning","mañana","n (en)","I morgen tidlig.","Tomorrow morning."],["formiddag","late morning","media mañana","n (en)","Vi mødes i formiddag.","We meet this morning."],["eftermiddag","afternoon","tarde","n (en)","I eftermiddag.","This afternoon."],["aften","evening","tarde / noche","n (en)","God aften.","Good evening."],["nat","night","noche","n (en)","Hele natten.","All night."],["i dag","today","hoy","adv","Hvad laver du i dag?","What are you doing today?"],["i morgen","tomorrow","mañana","adv","Vi ses i morgen.","See you tomorrow."],["i går","yesterday","ayer","adv","I går regnede det.","Yesterday it rained."],["weekend","weekend","fin de semana","n (en)","God weekend.","Have a good weekend."],["klokken","o'clock","a las","n","Klokken er ti.","It is ten o'clock."],["ur","clock / watch","reloj","n (et)","Mit ur er stoppet.","My watch has stopped."],["ferie","holiday","vacaciones","n (en)","Jeg holder ferie.","I am on holiday."],["fødselsdag","birthday","cumpleaños","n (en)","Tillykke med fødselsdagen.","Happy birthday."],["jul","Christmas","Navidad","n (en)","Glædelig jul.","Merry Christmas."],["påske","Easter","Pascua","n (en)","Vi rejser i påsken.","We travel at Easter."],["forår","spring","primavera","n (et)","Foråret er smukt.","Spring is beautiful."],["sommer","summer","verano","n (en)","En varm sommer.","A warm summer."],["efterår","autumn","otoño","n (et)","Efteråret er vådt.","Autumn is wet."],["vinter","winter","invierno","n (en)","Vinteren er lang.","The winter is long."],["rød","red","rojo","adj","En rød bil.","A red car."],["blå","blue","azul","adj","En blå himmel.","A blue sky."],["grøn","green","verde","adj","Et grønt æble.","A green apple."],["gul","yellow","amarillo","adj","Et gult hus.","A yellow house."],["sort","black","negro","adj","En sort jakke.","A black jacket."],["hvid","white","blanco","adj","Hvid sne.","White snow."],["grå","grey","gris","adj","En grå dag.","A grey day."],["brun","brown","marrón","adj","Brune sko.","Brown shoes."],["lyserød","pink","rosa","adj","En lyserød blomst.","A pink flower."],["orange","orange","naranja","adj","En orange trøje.","An orange jumper."],["lilla","purple","morado","adj","Et lilla tørklæde.","A purple scarf."],["farve","colour","color","n (en)","Hvilken farve kan du lide?","Which colour do you like?"],["lys","light","luz / claro","n (et)","Tænd lyset.","Turn on the light."],["mørk","dark","oscuro","adj","Det er mørkt ude.","It is dark outside."],["venstre","left","izquierda","adj","Drej til venstre.","Turn left."],["højre","right (side)","derecha","adj","Drej til højre.","Turn right."],["nord","north","norte","n","Vi kører mod nord.","We drive north."],["syd","south","sur","n","Syd for byen.","South of the city."],["øst","east","este","n","Øst for havnen.","East of the harbour."],["vest","west","oeste","n","Vest for søen.","West of the lake."],["midt","middle","medio","n","Midt i byen.","In the middle of the city."],["mad","food","comida","n (en)","Maden er klar.","The food is ready."],["vand","water","agua","n (et)","Et glas vand.","A glass of water."],["kaffe","coffee","café","n (en)","En kop kaffe.","A cup of coffee."],["te","tea","té","n (en)","Vil du have te?","Would you like tea?"],["øl","beer","cerveza","n (en)","En kold øl.","A cold beer."],["vin","wine","vino","n (en)","Rødvin eller hvidvin?","Red or white wine?"],["mælk","milk","leche","n (en)","Mælk i kaffen.","Milk in the coffee."],["brød","bread","pan","n (et)","Friskt brød.","Fresh bread."],["smør","butter","mantequilla","n (et)","Smør på brødet.","Butter on the bread."],["ost","cheese","queso","n (en)","Dansk ost.","Danish cheese."],["æg","egg","huevo","n (et)","To kogte æg.","Two boiled eggs."],["kød","meat","carne","n (et)","Vi spiser ikke kød.","We do not eat meat."],["fisk","fish","pescado","n (en)","Frisk fisk.","Fresh fish."],["kylling","chicken","pollo","n (en)","Stegt kylling.","Fried chicken."],["grøntsag","vegetable","verdura","n (en)","Grøntsager er sunde.","Vegetables are healthy."],["frugt","fruit","fruta","n (en)","Frugt til morgenmad.","Fruit for breakfast."],["æble","apple","manzana","n (et)","Et rødt æble.","A red apple."],["banan","banana","plátano","n (en)","En moden banan.","A ripe banana."],["kartoffel","potato","patata","n (en)","Kogte kartofler.","Boiled potatoes."],["ris","rice","arroz","n (en)","Ris med kylling.","Rice with chicken."],["pasta","pasta","pasta","n (en)","Pasta til aftensmad.","Pasta for dinner."],["suppe","soup","sopa","n (en)","Varm suppe.","Hot soup."],["salt","salt","sal","n (et)","Lidt salt, tak.","A little salt, please."],["peber","pepper","pimienta","n (en)","Salt og peber.","Salt and pepper."],["sukker","sugar","azúcar","n (et)","Uden sukker.","Without sugar."],["kage","cake","pastel","n (en)","En stor kage.","A big cake."],["is","ice / ice cream","hielo / helado","n (en)","En is om sommeren.","An ice cream in summer."],["morgenmad","breakfast","desayuno","n (en)","Morgenmad klokken otte.","Breakfast at eight."],["frokost","lunch","almuerzo","n (en)","Frokost på arbejdet.","Lunch at work."],["aftensmad","dinner","cena","n (en)","Aftensmad klokken seks.","Dinner at six."],["restaurant","restaurant","restaurante","n (en)","En god restaurant.","A good restaurant."],["café","cafe","cafetería","n (en)","Vi mødes på en café.","We meet at a cafe."],["butik","shop","tienda","n (en)","Butikken lukker nu.","The shop closes now."],["supermarked","supermarket","supermercado","n (et)","Jeg handler i supermarkedet.","I shop in the supermarket."],["marked","market","mercado","n (et)","Marked om lørdagen.","Market on Saturdays."],["pris","price","precio","n (en)","En god pris.","A good price."],["penge","money","dinero","n","Jeg har ingen penge.","I have no money."],["krone","krone (currency)","corona","n (en)","Det koster ti kroner.","It costs ten kroner."],["kort","card / map","tarjeta / mapa","n (et)","Jeg betaler med kort.","I pay by card."],["regning","bill","cuenta","n (en)","Må jeg få regningen?","May I have the bill?"],["kvittering","receipt","recibo","n (en)","Behold kvitteringen.","Keep the receipt."],["bank","bank","banco","n (en)","Banken åbner klokken ti.","The bank opens at ten."],["lejlighed","flat","piso","n (en)","En lille lejlighed.","A small flat."],["værelse","room","habitación","n (et)","Mit værelse er lille.","My room is small."],["køkken","kitchen","cocina","n (et)","Køkkenet er nyt.","The kitchen is new."],["badeværelse","bathroom","baño","n (et)","Hvor er badeværelset?","Where is the bathroom?"],["stue","living room","salón","n (en)","Vi sidder i stuen.","We sit in the living room."],["seng","bed","cama","n (en)","Jeg går i seng nu.","I am going to bed now."],["bord","table","mesa","n (et)","Sæt det på bordet.","Put it on the table."],["stol","chair","silla","n (en)","Tag en stol.","Take a chair."],["vindue","window","ventana","n (et)","Luk vinduet.","Close the window."],["gulv","floor","suelo","n (et)","Gulvet er koldt.","The floor is cold."],["væg","wall","pared","n (en)","Et billede på væggen.","A picture on the wall."],["nøgle","key","llave","n (en)","Jeg har glemt min nøgle.","I have forgotten my key."],["lampe","lamp","lámpara","n (en)","Tænd lampen.","Turn on the lamp."],["tæppe","carpet / blanket","alfombra / manta","n (et)","Et varmt tæppe.","A warm blanket."],["have","garden","jardín","n (en)","Vi sidder i haven.","We sit in the garden."],["gade","street","calle","n (en)","En smal gade.","A narrow street."],["vej","road / way","camino","n (en)","Vejen er lukket.","The road is closed."],["plads","square / space","plaza / sitio","n (en)","Der er ikke plads.","There is no space."],["park","park","parque","n (en)","En tur i parken.","A walk in the park."],["skole","school","escuela","n (en)","Børnene går i skole.","The children go to school."],["universitet","university","universidad","n (et)","Jeg læser på universitetet.","I study at university."],["kontor","office","oficina","n (et)","Mit kontor er på tredje sal.","My office is on the third floor."],["hospital","hospital","hospital","n (et)","Hun ligger på hospitalet.","She is in hospital."],["læge","doctor","médico","n (en)","Jeg skal til læge.","I have a doctor's appointment."],["apotek","pharmacy","farmacia","n (et)","Apoteket ligger her.","The pharmacy is here."],["kirke","church","iglesia","n (en)","En gammel kirke.","An old church."],["museum","museum","museo","n (et)","Museet er gratis.","The museum is free."],["bibliotek","library","biblioteca","n (et)","Jeg låner bøger på biblioteket.","I borrow books at the library."],["station","station","estación","n (en)","Vi mødes på stationen.","We meet at the station."],["lufthavn","airport","aeropuerto","n (en)","Lufthavnen er langt væk.","The airport is far away."],["havn","harbour","puerto","n (en)","Vi går ned til havnen.","We walk down to the harbour."],["hotel","hotel","hotel","n (et)","Et billigt hotel.","A cheap hotel."],["tog","train","tren","n (et)","Toget er forsinket.","The train is delayed."],["bus","bus","autobús","n (en)","Bussen kommer nu.","The bus is coming now."],["cykel","bicycle","bicicleta","n (en)","Jeg cykler på arbejde.","I cycle to work."],["bil","car","coche","n (en)","Vi tager bilen.","We take the car."],["fly","plane","avión","n (et)","Flyet letter klokken to.","The plane takes off at two."],["billet","ticket","billete","n (en)","En billet til København.","A ticket to Copenhagen."],["rejse","journey","viaje","n (en)","En lang rejse.","A long journey."],["tur","trip / walk","paseo / viaje","n (en)","En tur i skoven.","A walk in the forest."],["taske","bag","bolso","n (en)","Min taske er tung.","My bag is heavy."],["telefon","telephone","teléfono","n (en)","Min telefon er død.","My phone is dead."],["computer","computer","ordenador","n (en)","Computeren er langsom.","The computer is slow."],["bog","book","libro","n (en)","En spændende bog.","An exciting book."],["avis","newspaper","periódico","n (en)","Jeg læser avisen.","I read the newspaper."],["brev","letter","carta","n (et)","Et brev fra banken.","A letter from the bank."],["billede","picture","foto / cuadro","n (et)","Et smukt billede.","A beautiful picture."],["musik","music","música","n (en)","Jeg hører musik.","I listen to music."],["film","film","película","n (en)","En god film.","A good film."],["spil","game","juego","n (et)","Et sjovt spil.","A fun game."],["sport","sport","deporte","n (en)","Jeg dyrker sport.","I do sport."],["fodbold","football","fútbol","n (en)","Vi spiller fodbold.","We play football."],["tøj","clothes","ropa","n (et)","Rent tøj.","Clean clothes."],["sko","shoe","zapato","n (en)","Nye sko.","New shoes."],["jakke","jacket","chaqueta","n (en)","Tag din jakke på.","Put on your jacket."],["bukser","trousers","pantalones","n","Sorte bukser.","Black trousers."],["trøje","jumper","jersey","n (en)","En varm trøje.","A warm jumper."],["familie","family","familia","n (en)","Min familie bor i Spanien.","My family lives in Spain."],["mor","mother","madre","n (en)","Min mor ringer tit.","My mother calls often."],["far","father","padre","n (en)","Min far arbejder meget.","My father works a lot."],["forælder","parent","padre / madre","n (en)","Mine forældre er her.","My parents are here."],["søster","sister","hermana","n (en)","Min søster studerer.","My sister studies."],["bror","brother","hermano","n (en)","Min bror er ældre.","My brother is older."],["søn","son","hijo","n (en)","Deres søn er to år.","Their son is two."],["datter","daughter","hija","n (en)","Hans datter går i skole.","His daughter goes to school."],["kone","wife","esposa","n (en)","Min kone kommer senere.","My wife comes later."],["kæreste","partner / girlfriend","pareja","n (en)","Jeg bor med min kæreste.","I live with my partner."],["ven","friend","amigo","n (en)","En god ven.","A good friend."],["veninde","female friend","amiga","n (en)","Min veninde fra skolen.","My friend from school."],["nabo","neighbour","vecino","n (en)","Naboen er flink.","The neighbour is nice."],["kollega","colleague","compañero","n (en)","En ny kollega.","A new colleague."],["chef","boss","jefe","n (en)","Min chef er væk.","My boss is away."],["menneske","human being","persona","n (et)","Mange mennesker.","Many people."],["person","person","persona","n (en)","To personer.","Two people."],["folk","people","gente","n","Folk venter udenfor.","People are waiting outside."],["dreng","boy","niño","n (en)","En lille dreng.","A little boy."],["pige","girl","niña","n (en)","Pigen løber.","The girl runs."],["baby","baby","bebé","n (en)","Babyen sover.","The baby is sleeping."],["gæst","guest","invitado","n (en)","Vi får gæster.","We are having guests."],["navn","name","nombre","n (et)","Hvad er dit navn?","What is your name?"],["alder","age","edad","n (en)","Hvad er din alder?","What is your age?"],["krop","body","cuerpo","n (en)","En sund krop.","A healthy body."],["hoved","head","cabeza","n (et)","Mit hoved gør ondt.","My head hurts."],["hår","hair","pelo","n (et)","Langt hår.","Long hair."],["øje","eye","ojo","n (et)","Blå øjne.","Blue eyes."],["øre","ear","oreja","n (et)","Han har ondt i øret.","He has an earache."],["næse","nose","nariz","n (en)","En kold næse.","A cold nose."],["mund","mouth","boca","n (en)","Luk munden.","Close your mouth."],["tand","tooth","diente","n (en)","Jeg børster tænder.","I brush my teeth."],["arm","arm","brazo","n (en)","Min arm gør ondt.","My arm hurts."],["ben","leg / bone","pierna / hueso","n (et)","Han brækkede benet.","He broke his leg."],["fod","foot","pie","n (en)","Kolde fødder.","Cold feet."],["finger","finger","dedo","n (en)","Ti fingre.","Ten fingers."],["ryg","back","espalda","n (en)","Jeg har ondt i ryggen.","My back hurts."],["hjerte","heart","corazón","n (et)","Et stort hjerte.","A big heart."],["mave","stomach","estómago","n (en)","Ondt i maven.","Stomach ache."],["vejr","weather","tiempo (clima)","n (et)","Hvordan er vejret?","How is the weather?"],["sol","sun","sol","n (en)","Solen skinner.","The sun is shining."],["regn","rain","lluvia","n (en)","Meget regn i dag.","A lot of rain today."],["sne","snow","nieve","n (en)","Der ligger sne.","There is snow."],["vind","wind","viento","n (en)","Kraftig vind.","Strong wind."],["sky","cloud","nube","n (en)","Mange skyer.","Many clouds."],["himmel","sky / heaven","cielo","n (en)","En blå himmel.","A blue sky."],["storm","storm","tormenta","n (en)","Der kommer storm.","A storm is coming."],["tåge","fog","niebla","n (en)","Tæt tåge.","Thick fog."],["grad","degree","grado","n (en)","Ti grader.","Ten degrees."],["temperatur","temperature","temperatura","n (en)","Temperaturen falder.","The temperature is falling."],["natur","nature","naturaleza","n (en)","Smuk natur.","Beautiful nature."],["skov","forest","bosque","n (en)","En tur i skoven.","A walk in the forest."],["træ","tree / wood","árbol / madera","n (et)","Et højt træ.","A tall tree."],["blomst","flower","flor","n (en)","Friske blomster.","Fresh flowers."],["græs","grass","hierba","n (et)","Grønt græs.","Green grass."],["hav","sea","mar","n (et)","Vi bader i havet.","We swim in the sea."],["strand","beach","playa","n (en)","En lang strand.","A long beach."],["sø","lake","lago","n (en)","En stille sø.","A quiet lake."],["flod","river","río","n (en)","En bred flod.","A wide river."],["bjerg","mountain","montaña","n (et)","Høje bjerge.","High mountains."],["ø","island","isla","n (en)","En lille ø.","A small island."],["jord","earth / soil","tierra","n (en)","Våd jord.","Wet soil."],["luft","air","aire","n (en)","Frisk luft.","Fresh air."],["ild","fire","fuego","n (en)","Pas på ilden.","Watch out for the fire."],["dyr","animal","animal","n (et)","Vilde dyr.","Wild animals."],["hund","dog","perro","n (en)","En venlig hund.","A friendly dog."],["kat","cat","gato","n (en)","Katten sover.","The cat is sleeping."],["fugl","bird","pájaro","n (en)","Fuglene synger.","The birds are singing."],["hest","horse","caballo","n (en)","En hvid hest.","A white horse."],["ko","cow","vaca","n (en)","Køerne står på marken.","The cows are in the field."],["stærk","strong","fuerte","adj","En stærk kaffe.","A strong coffee."],["svag","weak","débil","adj","Et svagt signal.","A weak signal."],["høj","tall / loud","alto","adj","En høj bygning.","A tall building."],["lav","low","bajo","adj","En lav pris.","A low price."],["tyk","thick / fat","grueso","adj","En tyk bog.","A thick book."],["tynd","thin","delgado","adj","Tyndt papir.","Thin paper."],["bred","wide","ancho","adj","En bred gade.","A wide street."],["smal","narrow","estrecho","adj","En smal sti.","A narrow path."],["tung","heavy","pesado","adj","En tung kuffert.","A heavy suitcase."],["let","light / easy","ligero / fácil","adj","En let opgave.","An easy task."],["ren","clean","limpio","adj","Et rent glas.","A clean glass."],["beskidt","dirty","sucio","adj","Beskidte sko.","Dirty shoes."],["smuk","beautiful","hermoso","adj","En smuk dag.","A beautiful day."],["grim","ugly","feo","adj","Et grimt vejr.","Ugly weather."],["sund","healthy","sano","adj","Sund mad.","Healthy food."],["farlig","dangerous","peligroso","adj","Det er farligt.","It is dangerous."],["sikker","safe / sure","seguro","adj","Er du sikker?","Are you sure?"],["venlig","kind","amable","adj","En venlig person.","A kind person."],["flink","nice","majo","adj","Han er flink.","He is nice."],["sød","sweet / cute","dulce / lindo","adj","En sød hund.","A cute dog."],["dum","stupid","tonto","adj","En dum fejl.","A stupid mistake."],["klog","clever","listo","adj","Et klogt valg.","A clever choice."],["rolig","calm","tranquilo","adj","Tag det roligt.","Take it easy."],["travl","busy","ocupado","adj","Jeg har travlt.","I am busy."],["færdig","finished","terminado","adj","Jeg er færdig.","I am finished."],["mulig","possible","posible","adj","Det er muligt.","It is possible."],["nødvendig","necessary","necesario","adj","Det er ikke nødvendigt.","It is not necessary."],["hvordan går det","how are you","qué tal","phrase","Hej, hvordan går det?","Hi, how are you?"],["det går godt","I am fine","voy bien","phrase","Tak, det går godt.","Thanks, I am fine."],["vi ses","see you","hasta luego","phrase","Vi ses på fredag.","See you on Friday."],["tak for hjælpen","thanks for the help","gracias por la ayuda","phrase","Tak for hjælpen i dag.","Thanks for the help today."],["det ved jeg ikke","I do not know","no lo sé","phrase","Det ved jeg ikke endnu.","I do not know yet."],["jeg forstår ikke","I do not understand","no entiendo","phrase","Undskyld, jeg forstår ikke.","Sorry, I do not understand."],["kan du gentage","can you repeat","puedes repetir","phrase","Kan du gentage det?","Can you repeat that?"],["tal langsomt","speak slowly","habla despacio","phrase","Tal langsomt, tak.","Speak slowly, please."],["hvad koster det","how much is it","cuánto cuesta","phrase","Undskyld, hvad koster det?","Excuse me, how much is it?"],["hvor er toilettet","where is the toilet","dónde está el baño","phrase","Hvor er toilettet?","Where is the toilet?"],["jeg vil gerne have","I would like","quisiera","phrase","Jeg vil gerne have en kaffe.","I would like a coffee."],["det er i orden","that is fine","está bien","phrase","Det er helt i orden.","That is completely fine."],["ingen årsag","you are welcome","de nada","phrase","Tak! Ingen årsag.","Thanks! You are welcome."],["held og lykke","good luck","buena suerte","phrase","Held og lykke med eksamen.","Good luck with the exam."],["velkommen","welcome","bienvenido","adj","Velkommen til Danmark.","Welcome to Denmark."],["undervisning","teaching / classes","clases","n (en)","Undervisningen starter nu.","The classes start now."],["lektion","lesson","lección","n (en)","En lektion om ugen.","One lesson a week."],["opgave","task / assignment","tarea","n (en)","En svær opgave.","A difficult task."],["eksamen","exam","examen","n (en)","Eksamen er i juni.","The exam is in June."],["svar","answer","respuesta","n (et)","Et kort svar.","A short answer."],["spørgsmål","question","pregunta","n (et)","Et godt spørgsmål.","A good question."],["problem","problem","problema","n (et)","Intet problem.","No problem."],["løsning","solution","solución","n (en)","En enkel løsning.","A simple solution."],["idé","idea","idea","n (en)","Det er en god idé.","That is a good idea."],["plan","plan","plan","n (en)","Hvad er planen?","What is the plan?"],["møde","meeting","reunión","n (et)","Mødet er aflyst.","The meeting is cancelled."],["aftale","agreement / appointment","cita / acuerdo","n (en)","Vi har en aftale.","We have an appointment."],["besked","message","mensaje","n (en)","Jeg fik din besked.","I got your message."],["information","information","información","n (en)","Mere information her.","More information here."],["nyhed","piece of news","noticia","n (en)","Gode nyheder.","Good news."],["historie","story / history","historia","n (en)","En lang historie.","A long story."],["grund","reason / ground","razón","n (en)","Af den grund.","For that reason."],["mulighed","possibility","posibilidad","n (en)","En ny mulighed.","A new possibility."],["forskel","difference","diferencia","n (en)","Det gør en forskel.","It makes a difference."],["eksempel","example","ejemplo","n (et)","For eksempel.","For example."],["resultat","result","resultado","n (et)","Et godt resultat.","A good result."],["fejl","mistake","error","n (en)","Jeg lavede en fejl.","I made a mistake."],["held","luck","suerte","n (et)","Held i uheld.","A blessing in disguise."],["hjælp","help","ayuda","n (en)","Jeg har brug for hjælp.","I need help."],["brug","use / need","uso","n (et)","Jeg har brug for det.","I need it."],["følelse","feeling","sentimiento","n (en)","En god følelse.","A good feeling."],["tanke","thought","pensamiento","n (en)","En interessant tanke.","An interesting thought."],["drøm","dream","sueño","n (en)","En mærkelig drøm.","A strange dream."],["kærlighed","love","amor","n (en)","Kærlighed ved første blik.","Love at first sight."],["glæde","joy","alegría","n (en)","Med glæde.","With pleasure."],["sorg","sorrow","pena","n (en)","Dyb sorg.","Deep sorrow."],["angst","anxiety","angustia","n (en)","Han føler angst.","He feels anxiety."],["magt","power","poder","n (en)","Stor magt.","Great power."],["fred","peace","paz","n (en)","Fred og ro.","Peace and quiet."],["krig","war","guerra","n (en)","En lang krig.","A long war."],["regering","government","gobierno","n (en)","Regeringen mødes i dag.","The government meets today."],["lov","law","ley","n (en)","En ny lov.","A new law."],["ret","right / dish","derecho / plato","n (en)","Du har ret.","You are right."],["samfund","society","sociedad","n (et)","Det danske samfund.","Danish society."],["firma","company","empresa","n (et)","Et stort firma.","A big company."],["virksomhed","business","empresa","n (en)","En dansk virksomhed.","A Danish business."],["job","job","trabajo","n (et)","Et nyt job.","A new job."],["løn","salary","sueldo","n (en)","Lønnen kommer i dag.","The salary arrives today."],["ansøgning","application","solicitud","n (en)","Jeg sender en ansøgning.","I am sending an application."],["uddannelse","education","formación","n (en)","En god uddannelse.","A good education."],["erfaring","experience","experiencia","n (en)","Jeg har erfaring med det.","I have experience with that."],["projekt","project","proyecto","n (et)","Et spændende projekt.","An exciting project."],["gruppe","group","grupo","n (en)","En lille gruppe.","A small group."],["system","system","sistema","n (et)","Et nyt system.","A new system."],["hold","team","equipo","n (et)","Vores hold vandt.","Our team won."],["kvalitet","quality","calidad","n (en)","God kvalitet.","Good quality."],["antal","number / amount","cantidad","n (et)","Et stort antal.","A large number."],["mængde","amount","cantidad","n (en)","En stor mængde.","A large amount."],["stykke","piece","trozo","n (et)","Et stykke kage.","A piece of cake."],["slags","kind / sort","tipo","n (en)","Hvilken slags?","What kind?"],["form","shape / form","forma","n (en)","I god form.","In good shape."],["side","side / page","lado / página","n (en)","På side ti.","On page ten."],["ende","end","final","n (en)","I den anden ende.","At the other end."],["start","start","inicio","n (en)","Fra starten.","From the start."],["midte","middle","centro","n (en)","I midten.","In the middle."],["top","top","cima","n (en)","På toppen.","At the top."],["bund","bottom","fondo","n (en)","I bunden.","At the bottom."],["række","row","fila","n (en)","Første række.","First row."],["liste","list","lista","n (en)","En lang liste.","A long list."],["punkt","point","punto","n (et)","Et vigtigt punkt.","An important point."],["niveau","level","nivel","n (et)","Et højt niveau.","A high level."],["mål","goal","objetivo","n (et)","Mit mål er klart.","My goal is clear."],["metode","method","método","n (en)","En ny metode.","A new method."],["regel","rule","regla","n (en)","Som regel.","As a rule."],["grænse","border / limit","frontera / límite","n (en)","Grænsen er lukket.","The border is closed."],["afstand","distance","distancia","n (en)","På lang afstand.","At a long distance."],["hastighed","speed","velocidad","n (en)","Høj hastighed.","High speed."],["vægt","weight","peso","n (en)","Stor vægt.","Great weight."],["størrelse","size","talla / tamaño","n (en)","Hvilken størrelse?","Which size?"],["meter","metre","metro","n (en)","To meter høj.","Two metres tall."],["kilometer","kilometre","kilómetro","n (en)","Ti kilometer.","Ten kilometres."],["kilo","kilo","kilo","n (et)","Et kilo æbler.","A kilo of apples."],["liter","litre","litro","n (en)","En liter mælk.","A litre of milk."],["procent","percent","por ciento","n (en)","Ti procent.","Ten percent."],["par","pair / couple","par","n (et)","Et par sko.","A pair of shoes."],["rest","rest / remainder","resto","n (en)","Resten kommer senere.","The rest comes later."],["passe","to fit / look after","quedar / cuidar","v","Skoene passer ikke.","The shoes do not fit."],["passe på","to be careful","tener cuidado","v","Pas på trappen.","Be careful on the stairs."],["gemme","to hide / save","guardar","v","Gem filen.","Save the file."],["kaste","to throw","tirar","v","Kast bolden.","Throw the ball."],["trække","to pull","tirar de","v","Træk i håndtaget.","Pull the handle."],["skubbe","to push","empujar","v","Skub døren op.","Push the door open."],["løfte","to lift","levantar","v","Løft forsigtigt.","Lift carefully."],["bære","to carry","llevar","v","Jeg bærer taskerne.","I carry the bags."],["slå","to hit / turn on","golpear","v","Slå lyset til.","Turn the light on."],["bryde","to break","romper","v","Han brød reglen.","He broke the rule."],["ødelægge","to destroy / ruin","destrozar","v","Regnen ødelagde festen.","The rain ruined the party."],["reparere","to repair","reparar","v","Jeg reparerer cyklen.","I repair the bicycle."],["rense","to clean","limpiar","v","Rens filteret.","Clean the filter."],["vaske","to wash","lavar","v","Jeg vasker tøj i dag.","I do laundry today."],["tørre","to dry / wipe","secar","v","Tør bordet af.","Wipe the table."],["koge","to boil","hervir","v","Kog vandet.","Boil the water."],["stege","to fry","freír","v","Steg fisken.","Fry the fish."],["bage","to bake","hornear","v","Vi bager brød.","We bake bread."],["smage","to taste","saber / probar","v","Det smager godt.","It tastes good."],["lugte","to smell","oler","v","Det lugter af kaffe.","It smells of coffee."],["røre","to touch / stir","tocar / remover","v","Rør ikke ved det.","Do not touch it."],["mærke","to feel / notice","notar","v","Jeg mærker kulden.","I feel the cold."],["opdage","to discover","descubrir","v","Vi opdagede en fejl.","We discovered a mistake."],["undersøge","to examine","investigar","v","Lægen undersøger mig.","The doctor examines me."],["forklare","to explain","explicar","v","Kan du forklare det?","Can you explain it?"],["fortælle","to tell","contar","v","Fortæl mig mere.","Tell me more."],["nævne","to mention","mencionar","v","Han nævnte dit navn.","He mentioned your name."],["foreslå","to suggest","sugerir","v","Jeg foreslår en pause.","I suggest a break."],["love","to promise","prometer","v","Jeg lover det.","I promise."],["takke","to thank","agradecer","v","Jeg takker for hjælpen.","I thank you for the help."],["undskylde","to apologise","disculparse","v","Jeg undskylder.","I apologise."],["klage","to complain","quejarse","v","Hun klagede over støjen.","She complained about the noise."],["diskutere","to discuss","discutir","v","Vi diskuterer planen.","We discuss the plan."],["aftale","to agree / arrange","acordar","v","Vi aftaler et tidspunkt.","We arrange a time."],["planlægge","to plan","planificar","v","Vi planlægger turen.","We are planning the trip."],["organisere","to organise","organizar","v","Hun organiserer festen.","She organises the party."],["arrangere","to arrange","organizar","v","Vi arrangerer et møde.","We arrange a meeting."],["deltage","to take part","participar","v","Jeg deltager i kurset.","I take part in the course."],["studere","to study","estudiar","v","Jeg studerer på universitetet.","I study at the university."],["undervise","to teach","enseñar","v","Hun underviser i matematik.","She teaches mathematics."],["øve","to practise","practicar","v","Jeg øver hver dag.","I practise every day."],["gentage","to repeat","repetir","v","Gentag sætningen.","Repeat the sentence."],["oversætte","to translate","traducir","v","Kan du oversætte det?","Can you translate it?"],["stave","to spell","deletrear","v","Hvordan staver man det?","How do you spell it?"],["udtale","to pronounce","pronunciar","v","Hvordan udtaler man ordet?","How do you pronounce the word?"],["regne","to calculate / rain","calcular / llover","v","Det regner igen.","It is raining again."],["måle","to measure","medir","v","Mål længden.","Measure the length."],["tælle","to count","contar","v","Tæl til ti.","Count to ten."],["sammenligne","to compare","comparar","v","Sammenlign priserne.","Compare the prices."],["gætte","to guess","adivinar","v","Gæt hvem der kommer.","Guess who is coming."],["mene","to mean / think","opinar","v","Hvad mener du?","What do you mean?"],["forvente","to expect","esperar","v","Jeg forventer svar i dag.","I expect an answer today."],["overveje","to consider","considerar","v","Jeg overvejer det.","I am considering it."],["undgå","to avoid","evitar","v","Undgå myldretiden.","Avoid the rush hour."],["tillade","to allow","permitir","v","Det er ikke tilladt.","It is not allowed."],["forbyde","to forbid","prohibir","v","Rygning er forbudt.","Smoking is forbidden."],["tvinge","to force","obligar","v","Ingen tvinger dig.","Nobody is forcing you."],["turde","to dare","atreverse","v","Jeg tør ikke.","I do not dare."],["nå","to reach / manage","llegar / alcanzar","v","Jeg nåede toget.","I caught the train."],["ankomme","to arrive","llegar","v","Toget ankommer nu.","The train arrives now."],["forlade","to leave","dejar / salir de","v","Vi forlader huset.","We leave the house."],["følge","to follow","seguir","v","Følg mig.","Follow me."],["undre sig","to wonder","preguntarse","v","Jeg undrer mig over det.","I wonder about it."],["savne","to miss","echar de menos","v","Jeg savner min familie.","I miss my family."],["bekymre sig","to worry","preocuparse","v","Bekymr dig ikke.","Do not worry."],["slappe af","to relax","relajarse","v","Slap af.","Relax."],["hvile","to rest","descansar","v","Jeg hviler lidt.","I rest a little."],["træne","to train","entrenar","v","Jeg træner tre gange om ugen.","I train three times a week."],["svømme","to swim","nadar","v","Kan du svømme?","Can you swim?"],["cykle","to cycle","ir en bici","v","Jeg cykler hver dag.","I cycle every day."],["gå tur","to take a walk","pasear","phrase","Vi går en tur.","We take a walk."],["rejse sig","to stand up","levantarse","v","Han rejste sig.","He stood up."],["falde","to fall","caer","v","Pas på, du falder.","Careful, you will fall."],["stige","to rise","subir","v","Priserne stiger.","Prices are rising."],["vokse","to grow","crecer","v","Børnene vokser hurtigt.","The children grow fast."],["ændre sig","to change (itself)","cambiar","v","Vejret ændrer sig.","The weather is changing."],["fungere","to work / function","funcionar","v","Det fungerer ikke.","It does not work."],["virke","to seem / work","parecer / funcionar","v","Det virker godt.","It works well."],["begynde på","to start on","empezar con","phrase","Jeg begynder på et kursus.","I am starting a course."],["holde op","to stop","dejar de","phrase","Hold op med det.","Stop that."],["tage af sted","to set off","irse","phrase","Vi tager af sted nu.","We are setting off now."],["komme tilbage","to come back","volver","phrase","Jeg kommer tilbage senere.","I come back later."],["tage med","to bring along","llevar consigo","phrase","Tag en jakke med.","Bring a jacket."],["se ud","to look / appear","parecer","phrase","Du ser træt ud.","You look tired."],["finde ud af","to find out","averiguar","phrase","Jeg fandt ud af det.","I found out."],["skynde sig","to hurry","darse prisa","v","Skynd dig.","Hurry up."],["blive ved","to keep on","seguir","phrase","Bliv ved.","Keep going."],["give op","to give up","rendirse","phrase","Giv ikke op.","Do not give up."],["tage fejl","to be wrong","equivocarse","phrase","Jeg tog fejl.","I was wrong."],["have ret","to be right","tener razón","phrase","Du har ret.","You are right."],["have brug for","to need","necesitar","phrase","Jeg har brug for hjælp.","I need help."],["have lyst til","to feel like","tener ganas de","phrase","Har du lyst til kaffe?","Do you feel like coffee?"],["være enig","to agree","estar de acuerdo","phrase","Jeg er enig.","I agree."],["gøre rent","to clean up","limpiar","phrase","Vi gør rent om lørdagen.","We clean on Saturdays."],["stå op","to get up","levantarse","phrase","Jeg står op klokken seks.","I get up at six."],["gennem","through","a través de","prep","Gennem skoven.","Through the forest."],["langs","along","a lo largo de","prep","Langs vandet.","Along the water."],["bag","behind","detrás de","prep","Bag huset.","Behind the house."],["foran","in front of","delante de","prep","Foran døren.","In front of the door."],["ved siden af","next to","al lado de","prep","Ved siden af banken.","Next to the bank."],["over for","opposite","enfrente de","prep","Over for stationen.","Opposite the station."],["inde","inside","dentro","adv","Vi sidder inde.","We sit inside."],["ude","outside","fuera","adv","Børnene leger ude.","The children play outside."],["hjemme","at home","en casa","adv","Jeg bliver hjemme.","I am staying home."],["væk","away / gone","fuera / ido","adv","Nøglen er væk.","The key is gone."],["tilbage","back","de vuelta","adv","Jeg er tilbage klokken fem.","I am back at five."],["frem","forward","adelante","adv","Gå frem.","Go forward."],["rundt","around","alrededor","adv","Vi gik rundt i byen.","We walked around the city."],["forbi","past","pasado","adv","Bussen kørte forbi.","The bus drove past."],["indtil","until","hasta","prep","Indtil i morgen.","Until tomorrow."],["siden","since / ago","desde / hace","prep","Siden i går.","Since yesterday."],["imens","while","mientras","conj","Imens laver jeg mad.","Meanwhile I cook."],["før","before","antes","conj","Før vi går.","Before we go."],["bagefter","afterwards","después","adv","Vi spiser bagefter.","We eat afterwards."],["derefter","after that","luego","adv","Derefter gik vi hjem.","After that we went home."],["først","first","primero","adv","Først skal vi spise.","First we have to eat."],["til sidst","finally","al final","adv","Til sidst kom han.","Finally he came."],["endelig","at last","por fin","adv","Endelig er du her.","At last you are here."],["i stedet for","instead of","en vez de","prep","Te i stedet for kaffe.","Tea instead of coffee."],["på grund af","because of","a causa de","prep","På grund af regnen.","Because of the rain."],["ifølge","according to","según","prep","Ifølge avisen.","According to the newspaper."],["udover","besides","además de","prep","Udover det.","Besides that."],["både","both","tanto","conj","Både kaffe og te.","Both coffee and tea."],["enten","either","o bien","conj","Enten nu eller aldrig.","Either now or never."],["hverken","neither","ni","conj","Hverken han eller hun.","Neither he nor she."],["samt","as well as","así como","conj","Brød samt smør.","Bread as well as butter."],["altså","so / that is","o sea","adv","Altså, vi går nu.","So, we are going now."],["nemlig","namely / you see","es decir","adv","Han er nemlig syg.","He is ill, you see."],["faktisk","actually","en realidad","adv","Det er faktisk rigtigt.","That is actually right."],["virkelig","really","de verdad","adv","Er det virkelig sandt?","Is that really true?"],["absolut","absolutely","absolutamente","adv","Absolut ikke.","Absolutely not."],["ganske","quite","bastante","adv","Ganske godt.","Quite good."],["temmelig","rather","bastante","adv","Temmelig dyrt.","Rather expensive."],["mindst","at least / smallest","al menos","adv","Mindst ti personer.","At least ten people."],["højst","at most","como máximo","adv","Højst en time.","At most an hour."],["cirka","approximately","aproximadamente","adv","Cirka tyve minutter.","About twenty minutes."],["præcis","exactly","exacto","adv","Præcis klokken ni.","Exactly at nine."],["omtrent","roughly","más o menos","adv","Omtrent det samme.","Roughly the same."],["tit","often","a menudo","adv","Vi ses tit.","We see each other often."],["engang","once","una vez","adv","Engang boede jeg i Aarhus.","Once I lived in Aarhus."],["pludselig","suddenly","de repente","adv","Pludselig regnede det.","Suddenly it rained."],["heldigvis","luckily","por suerte","adv","Heldigvis var der plads.","Luckily there was room."],["desværre","unfortunately","lamentablemente","adv","Desværre kan jeg ikke.","Unfortunately I cannot."],["forhåbentlig","hopefully","ojalá","adv","Forhåbentlig bliver det godt.","Hopefully it will be good."],["sandsynligvis","probably","probablemente","adv","Sandsynligvis i morgen.","Probably tomorrow."],["især om vinteren","especially in winter","sobre todo en invierno","phrase","Det er mørkt især om vinteren.","It is dark especially in winter."],["nogensinde","ever","alguna vez","adv","Har du nogensinde prøvet?","Have you ever tried?"],["overalt","everywhere","por todas partes","adv","Der er sne overalt.","There is snow everywhere."],["hjemmefra","from home","desde casa","adv","Jeg arbejder hjemmefra.","I work from home."],["udenfor","outside","afuera","adv","Vent udenfor.","Wait outside."],["indenfor","inside","adentro","adv","Kom indenfor.","Come inside."],["ovenpå","upstairs / on top","arriba","adv","Soveværelset er ovenpå.","The bedroom is upstairs."],["nedenunder","downstairs","abajo","adv","Køkkenet er nedenunder.","The kitchen is downstairs."],["etage","floor / storey","planta","n (en)","Tredje etage.","Third floor."],["trappe","stairs","escalera","n (en)","Tag trappen.","Take the stairs."],["elevator","lift","ascensor","n (en)","Elevatoren virker ikke.","The lift does not work."],["indgang","entrance","entrada","n (en)","Hovedindgangen er her.","The main entrance is here."],["udgang","exit","salida","n (en)","Udgangen er til højre.","The exit is on the right."],["adresse","address","dirección","n (en)","Hvad er din adresse?","What is your address?"],["postnummer","postcode","código postal","n (et)","Hvad er postnummeret?","What is the postcode?"],["kvarter","neighbourhood / quarter","barrio","n (et)","Et roligt kvarter.","A quiet neighbourhood."],["bygning","building","edificio","n (en)","En høj bygning.","A tall building."],["lejer","tenant","inquilino","n (en)","Lejeren flytter ud.","The tenant is moving out."],["husleje","rent","alquiler","n (en)","Huslejen betales den første.","The rent is paid on the first."],["kontrakt","contract","contrato","n (en)","Læs kontrakten.","Read the contract."],["forsikring","insurance","seguro","n (en)","Har du forsikring?","Do you have insurance?"],["skat","tax","impuesto","n (en)","Skatten er høj.","The tax is high."],["konto","account","cuenta","n (en)","Min konto er tom.","My account is empty."],["betaling","payment","pago","n (en)","Betalingen er modtaget.","The payment is received."],["rabat","discount","descuento","n (en)","Er der rabat?","Is there a discount?"],["tilbud","offer","oferta","n (et)","Et godt tilbud.","A good offer."],["kunde","customer","cliente","n (en)","En tilfreds kunde.","A satisfied customer."],["service","service","servicio","n (en)","God service.","Good service."],["kø","queue","cola","n (en)","Der er lang kø.","There is a long queue."],["ansøger","applicant","solicitante","n (en)","En stærk ansøger.","A strong applicant."],["samtale","conversation","conversación","n (en)","En lang samtale.","A long conversation."],["sprog","language","idioma","n (et)","Jeg lærer et nyt sprog.","I am learning a new language."],["dansk","Danish","danés","adj","Jeg taler lidt dansk.","I speak a little Danish."],["engelsk","English","inglés","adj","Taler du engelsk?","Do you speak English?"],["spansk","Spanish","español","adj","Spansk er mit modersmål.","Spanish is my mother tongue."],["tysk","German","alemán","adj","Jeg forstår lidt tysk.","I understand a little German."],["udlænding","foreigner","extranjero","n (en)","Jeg er udlænding her.","I am a foreigner here."],["kuffert","suitcase","maleta","n (en)","En tung kuffert.","A heavy suitcase."],["paraply","umbrella","paraguas","n (en)","Husk din paraply.","Remember your umbrella."],["hue","hat / beanie","gorro","n (en)","Tag en hue på.","Put on a hat."],["handske","glove","guante","n (en)","Varme handsker.","Warm gloves."],["tørklæde","scarf","bufanda","n (et)","Et blåt tørklæde.","A blue scarf."],["briller","glasses","gafas","n","Mine briller er væk.","My glasses are gone."],["pung","wallet","cartera","n (en)","Min pung er i tasken.","My wallet is in the bag."],["nøglering","keyring","llavero","n (en)","En ny nøglering.","A new keyring."],["oplader","charger","cargador","n (en)","Har du en oplader?","Do you have a charger?"],["skærm","screen","pantalla","n (en)","En stor skærm.","A big screen."],["tastatur","keyboard","teclado","n (et)","Et dansk tastatur.","A Danish keyboard."],["fil","file","archivo","n (en)","Send mig filen.","Send me the file."],["mappe","folder","carpeta","n (en)","Filen ligger i mappen.","The file is in the folder."],["mail","email","correo","n (en)","Jeg skriver en mail.","I am writing an email."],["hjemmeside","website","sitio web","n (en)","Se vores hjemmeside.","See our website."],["adgangskode","password","contraseña","n (en)","Jeg har glemt min adgangskode.","I have forgotten my password."],["netværk","network","red","n (et)","Et hurtigt netværk.","A fast network."],["program","programme","programa","n (et)","Et nyt program.","A new programme."],["kursus","course","curso","n (et)","Et kursus i dansk.","A course in Danish."],["forelæsning","lecture","clase magistral","n (en)","Forelæsningen starter klokken ni.","The lecture starts at nine."],["note","note","apunte","n (en)","Jeg tager noter.","I take notes."],["karakter","grade / character","nota","n (en)","En god karakter.","A good grade."],["studerende","student","estudiante","n (en)","En ny studerende.","A new student."],["lærer","teacher","profesor","n (en)","Vores lærer er sød.","Our teacher is nice."],["klasse","class","clase","n (en)","Hele klassen kommer.","The whole class is coming."],["papir","paper","papel","n (et)","Et stykke papir.","A piece of paper."],["blyant","pencil","lápiz","n (en)","Har du en blyant?","Do you have a pencil?"],["kuglepen","pen","bolígrafo","n (en)","Lån mig en kuglepen.","Lend me a pen."],["matematik","mathematics","matemáticas","n (en)","Jeg kan godt lide matematik.","I like mathematics."],["økonomi","economy / finance","economía","n (en)","Dansk økonomi vokser.","The Danish economy is growing."],["teknik","technology / technique","técnica","n (en)","Moderne teknik.","Modern technology."],["energi","energy","energía","n (en)","Grøn energi.","Green energy."],["miljø","environment","medio ambiente","n (et)","Et bedre miljø.","A better environment."],["klima","climate","clima","n (et)","Klimaet ændrer sig.","The climate is changing."],["affald","waste","basura","n (et)","Sorter dit affald.","Sort your waste."],["strøm","electricity / current","corriente","n (en)","Strømmen er gået.","The power is out."],["varme","heat / heating","calefacción","n (en)","Skru op for varmen.","Turn up the heating."],["maskine","machine","máquina","n (en)","Maskinen kører.","The machine is running."],["værktøj","tool","herramienta","n (et)","Det rigtige værktøj.","The right tool."],["materiale","material","material","n (et)","Et stærkt materiale.","A strong material."],["produkt","product","producto","n (et)","Et godt produkt.","A good product."],["produktion","production","producción","n (en)","Produktionen er stoppet.","Production has stopped."],["leverance","delivery","entrega","n (en)","Leverancen er forsinket.","The delivery is delayed."],["lager","stock / warehouse","almacén","n (et)","Det er på lager.","It is in stock."],["ordre","order","pedido","n (en)","Din ordre er sendt.","Your order has been sent."],["fabrik","factory","fábrica","n (en)","En stor fabrik.","A big factory."],["ingeniør","engineer","ingeniero","n (en)","Hun er ingeniør.","She is an engineer."],["sygeplejerske","nurse","enfermera","n (en)","Sygeplejersken kommer nu.","The nurse is coming now."],["politi","police","policía","n (et)","Ring til politiet.","Call the police."],["brandmand","firefighter","bombero","n (en)","En modig brandmand.","A brave firefighter."],["butiksassistent","shop assistant","dependiente","n (en)","Spørg butiksassistenten.","Ask the shop assistant."],["tjener","waiter","camarero","n (en)","Tjeneren kommer straks.","The waiter is coming right away."],["kok","cook","cocinero","n (en)","En dygtig kok.","A skilled cook."],["landmand","farmer","agricultor","n (en)","Landmanden arbejder tidligt.","The farmer works early."],["kunstner","artist","artista","n (en)","En kendt kunstner.","A famous artist."],["forfatter","author","autor","n (en)","Min yndlingsforfatter.","My favourite author."],["kunst","art","arte","n (en)","Moderne kunst.","Modern art."],["teater","theatre","teatro","n (et)","Vi går i teatret.","We go to the theatre."],["koncert","concert","concierto","n (en)","En god koncert.","A good concert."],["fest","party","fiesta","n (en)","En stor fest.","A big party."],["gave","gift","regalo","n (en)","En lille gave.","A small gift."],["tradition","tradition","tradición","n (en)","En dansk tradition.","A Danish tradition."],["hygge","cosiness","ambiente acogedor","n (en)","Der er hygge i stuen.","There is a cosy mood in the room."],["stemning","atmosphere","ambiente","n (en)","God stemning.","Good atmosphere."],["oplevelse","experience (event)","experiencia","n (en)","En dejlig oplevelse.","A lovely experience."],["minde","memory","recuerdo","n (et)","Et godt minde.","A good memory."],["fremtid","future","futuro","n (en)","I fremtiden.","In the future."],["fortid","past","pasado","n (en)","Det hører fortiden til.","That belongs to the past."],["nutid","present","presente","n (en)","I nutiden.","In the present."],["begyndelse","beginning","principio","n (en)","Fra begyndelsen.","From the beginning."],["slutning","ending","final","n (en)","I slutningen af ugen.","At the end of the week."],["dejlig","lovely","encantador","adj","En dejlig dag.","A lovely day."],["spændende","exciting","emocionante","adj","En spændende bog.","An exciting book."],["interessant","interesting","interesante","adj","Meget interessant.","Very interesting."],["mærkelig","strange","raro","adj","En mærkelig lyd.","A strange sound."],["almindelig","ordinary / common","común","adj","En almindelig dag.","An ordinary day."],["speciel","special","especial","adj","Noget helt specielt.","Something very special."],["forskellig","different","diferente","adj","To forskellige svar.","Two different answers."],["ens","identical","igual","adj","De er helt ens.","They are exactly the same."],["lignende","similar","parecido","adj","Noget lignende.","Something similar."],["tilfreds","satisfied","satisfecho","adj","Jeg er tilfreds.","I am satisfied."],["skuffet","disappointed","decepcionado","adj","Han var skuffet.","He was disappointed."],["overrasket","surprised","sorprendido","adj","Jeg er overrasket.","I am surprised."],["nervøs","nervous","nervioso","adj","Jeg er lidt nervøs.","I am a little nervous."],["bange","afraid","asustado","adj","Vær ikke bange.","Do not be afraid."],["sikkert","surely / safely","seguramente","adv","Det er sikkert rigtigt.","That is surely right."],["usikker","unsure","inseguro","adj","Jeg er usikker.","I am unsure."],["ledig","vacant / available","libre","adj","Er bordet ledigt?","Is the table free?"],["optaget","busy / occupied","ocupado","adj","Linjen er optaget.","The line is busy."],["sand","true","verdadero","adj","Er det sandt?","Is that true?"],["falsk","false","falso","adj","Et falsk svar.","A false answer."],["enkel","simple","sencillo","adj","En enkel løsning.","A simple solution."],["kompliceret","complicated","complicado","adj","Det er kompliceret.","It is complicated."],["tydelig","clear / obvious","claro","adj","En tydelig besked.","A clear message."],["uklar","unclear","poco claro","adj","Teksten er uklar.","The text is unclear."],["nøjagtig","accurate","exacto","adj","Et nøjagtigt tal.","An accurate number."],["hyggelig","cosy / pleasant","acogedor","adj","En hyggelig aften.","A pleasant evening."],["stille","quiet","tranquilo","adj","Et stille rum.","A quiet room."],["larmende","noisy","ruidoso","adj","En larmende gade.","A noisy street."],["moderne","modern","moderno","adj","Et moderne køkken.","A modern kitchen."],["traditionel","traditional","tradicional","adj","Traditionel mad.","Traditional food."],["offentlig","public","público","adj","Offentlig transport.","Public transport."],["privat","private","privado","adj","Et privat møde.","A private meeting."],["fælles","shared / common","común","adj","Et fælles køkken.","A shared kitchen."],["personlig","personal","personal","adj","En personlig besked.","A personal message."],["tilgængelig","available","disponible","adj","Jeg er tilgængelig i morgen.","I am available tomorrow."],["nødt til","have to","tener que","phrase","Jeg er nødt til at gå.","I have to go."],["gerne","gladly / would like","con gusto","adv","Jeg vil gerne hjælpe.","I would like to help."],["nok","enough / probably","suficiente / seguramente","adv","Det er nok nu.","That is enough now."],["vel","surely / right?","¿verdad?","adv","Du kommer vel?","You are coming, right?"],["vist","apparently","al parecer","adv","Han er vist syg.","He is apparently ill."],["måde","way / manner","manera","n (en)","På den måde.","In that way."],["øjeblik","moment","momento","n (et)","Et øjeblik, tak.","One moment, please."],["slut","end / over","fin","n (en)","Mødet er slut.","The meeting is over."],["mening","meaning / opinion","sentido / opinión","n (en)","Hvad er din mening?","What is your opinion?"],["behov","need","necesidad","n (et)","Der er behov for hjælp.","There is a need for help."],["vær så god","here you are","aquí tiene","phrase","Vær så god, her er din kaffe.","Here you are, your coffee."],["sandhed","truth","verdad","n (en)","Sig sandheden.","Tell the truth."],["ansvar","responsibility","responsabilidad","n (et)","Det er mit ansvar.","It is my responsibility."],["lyd","sound","sonido","n (en)","En høj lyd.","A loud sound."],["smag","taste","sabor","n (en)","En god smag.","A good taste."],["vane","habit","costumbre","n (en)","En dårlig vane.","A bad habit."],["beslutning","decision","decisión","n (en)","En svær beslutning.","A difficult decision."],["sikkerhed","safety / security","seguridad","n (en)","Sikkerheden er vigtig.","Safety is important."],["værdi","value","valor","n (en)","Stor værdi.","Great value."],["chance","chance","oportunidad","n (en)","En sidste chance.","A last chance."],["risiko","risk","riesgo","n (en)","En stor risiko.","A big risk."],["fordel","advantage","ventaja","n (en)","En klar fordel.","A clear advantage."],["ulempe","disadvantage","desventaja","n (en)","En lille ulempe.","A small disadvantage."]];
+</script>
+<script>
+window.DANSK_ORDER=[103,104,107,108,109,102,105,100,101,607,987,605,606,595,22,28,272,518,226,203,27,866,868,867,215,117,222,16,254,893,459,38,36,112,114,111,110,113,593,594,598,599,600,48,61,200,45,51,55,208,202,204,205,118,206,228,229,230,95,221,219,220,239,300,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,328,329,362,363,364,62,352,353,83,354,355,366,357,360,361,365,333,334,335,336,337,338,339,24,127,123,124,827,397,398,399,400,401,404,403,406,407,408,409,412,411,429,430,432,433,434,435,436,241,242,476,601,603,471,472,473,474,467,468,454,455,390,391,41,12,97,236,758,88,87,439,440,94,602,496,497,498,500,501,506,507,505,508,509,510,86,84,85,514,515,511,512,75,74,76,77,78,160,161,163,164,169,170,155,156,158,153,578,148,149,150,146,147,590,589,967,942,0,1,2,3,4,5,19,6,7,11,14,18,15,21,13,10,8,9,23,63,179,180,116,59,192,64,134,137,37,70,47,138,144,115,42,50,65,213,214,217,252,253,256,243,244,246,247,248,249,223,224,271,212,210,211,274,275,276,273,690,774,17,20,25,26,29,30,31,32,33,34,35,39,40,43,44,46,49,52,53,54,56,57,58,60,66,67,68,69,71,72,73,79,80,81,82,89,90,91,92,93,96,98,99,106,119,120,121,122,125,126,128,129,130,131,132,133,135,136,139,140,141,142,143,145,151,152,154,157,159,162,165,166,167,168,171,172,173,174,175,176,177,178,181,182,183,184,185,186,187,188,189,190,191,193,194,195,196,197,198,199,201,207,209,216,218,225,227,231,232,233,234,235,237,238,240,245,250,251,255,257,258,259,260,261,262,263,264,265,266,267,268,269,270,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,301,322,323,324,325,326,327,330,331,332,340,341,342,343,344,345,346,347,348,349,350,351,356,358,359,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,392,393,394,395,396,402,405,410,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,431,437,438,441,442,443,444,445,446,447,448,449,450,451,452,453,456,457,458,460,461,462,463,464,465,466,469,470,475,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,499,502,503,504,513,516,517,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,576,577,579,580,581,582,583,584,585,586,587,588,591,592,596,597,604,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,759,760,761,762,763,764,765,766,767,768,769,770,771,772,773,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,864,865,869,870,871,872,873,874,875,876,877,878,879,880,881,882,883,884,885,886,887,888,889,890,891,892,894,895,896,897,898,899,900,901,902,903,904,905,906,907,908,909,910,911,912,913,914,915,916,917,918,919,920,921,922,923,924,925,926,927,928,929,930,931,932,933,934,935,936,937,938,939,940,941,943,944,945,946,947,948,949,950,951,952,953,954,955,956,957,958,959,960,961,962,963,964,965,966,968,969,970,971,972,973,974,975,976,977,978,979,980,981,982,983,984,985,986,988,989,990,991,992,993,994,995,996,997,998,999];
+</script>
+<script>
+(function(){
+  "use strict";
+  var W = window.DANSK_WORDS || [];
+  var ORDER = window.DANSK_ORDER || W.map(function(_, i){ return i; });
+  var ORDPOS = [];
+  ORDER.forEach(function(idx, pos){ ORDPOS[idx] = pos; });
+
+  var KEY = "tusind-ord-v1";
+  var INTERVALS = [0, 1, 2, 4, 8, 16, 32];
+  var DAY = 86400000;
+  var DOSE_MIN = 6, DOSE_MAX = 20, DOSE_START = 10;
+  var BLOCK_FLOOR = 10;       // fewer than this many due: never blocked
+  var WARM_Q = 10, TEST_Q = 20, TEST_PASS = 14, TEST_MIN_WORDS = 12, TEST_GAP = 2 * DAY;
+  var LISTEN_SHARE = 0.33, GENDER_SHARE = 0.18;
+
+  /* ---------- state ---------- */
+  var state = {
+    v:2, boxes:{}, dose:DOSE_START, cleared:[], streak:0, lastDay:"", lastAct:"",
+    warm:null, nextTest:0, testedUpto:-1, tests:[], lastMissed:[], repair:[], lastRamp:""
+  };
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw){
+      var p = JSON.parse(raw);
+      if (p && p.boxes){
+        state.boxes = p.boxes;
+        state.dose = p.dose || DOSE_START;
+        state.cleared = p.cleared || [];
+        state.streak = p.streak || 0;
+        state.lastDay = p.lastDay || "";
+        state.lastAct = p.lastAct || "";
+        state.warm = p.warm || p.daily || null;
+        state.nextTest = p.nextTest || 0;
+        state.testedUpto = (p.testedUpto == null ? -1 : p.testedUpto);
+        state.tests = p.tests || [];
+        state.lastMissed = p.lastMissed || [];
+        state.repair = p.repair || [];
+        state.lastRamp = p.lastRamp || "";
+      }
+    }
+  } catch(e){}
+
+  var storageOK = true;
+  try { localStorage.setItem(KEY + "-probe", "1"); localStorage.removeItem(KEY + "-probe"); }
+  catch(e){ storageOK = false; }
+
+  var saveTimer = null;
+  function flush(){ clearTimeout(saveTimer); saveTimer = null; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+  function save(){ clearTimeout(saveTimer); saveTimer = setTimeout(flush, 250); }
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", function(){ if (document.hidden) flush(); });
+
+  /* ---------- dates ---------- */
+  function dstr(d){ return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2); }
+  function today(){ return dstr(new Date()); }
+  function dayBefore(s, n){
+    var p = s.split("-");
+    var d = new Date(+p[0], +p[1]-1, +p[2]);
+    d.setDate(d.getDate() - n);
+    return dstr(d);
+  }
+  function daysBetween(a, b){
+    var pa = a.split("-"), pb = b.split("-");
+    var da = new Date(+pa[0], +pa[1]-1, +pa[2]), db = new Date(+pb[0], +pb[1]-1, +pb[2]);
+    return Math.round((db - da) / DAY);
+  }
+
+  /* ---------- words ---------- */
+  function box(i){ var b = state.boxes[i]; return b ? b.b : 0; }
+  function seen(i){ return !!state.boxes[i]; }
+  function dueAt(i){ var b = state.boxes[i]; return b ? b.t + INTERVALS[Math.min(b.b, INTERVALS.length-1)] * DAY : Infinity; }
+  function due(i){ return seen(i) && box(i) < 6 && dueAt(i) <= Date.now(); }
+  function grade(i, good){
+    var b = state.boxes[i] || { b:0, t:0 };
+    b.b = good ? Math.min(b.b + 1, 6) : 1;
+    b.t = Date.now();
+    state.boxes[i] = b;
+    state.lastAct = today();
+    save();
+  }
+  function dueList(){
+    var out = [];
+    for (var i = 0; i < W.length; i++) if (due(i)) out.push(i);
+    out.sort(function(a,b){ return dueAt(a) - dueAt(b); });
+    return out;
+  }
+  function seenList(){
+    var out = [];
+    for (var i = 0; i < W.length; i++) if (seen(i)) out.push(i);
+    return out;
+  }
+  function nextNew(n){
+    var out = [];
+    for (var k = 0; k < ORDER.length && out.length < n; k++) if (!seen(ORDER[k])) out.push(ORDER[k]);
+    return out;
+  }
+  function learnedCount(){
+    var n = 0;
+    for (var i = 0; i < W.length; i++) if (box(i) >= 3) n++;
+    return n;
+  }
+  function isNoun(i){ return W[i][3].indexOf("n (") === 0; }
+  function gender(i){ return W[i][3].indexOf("(et)") > -1 ? "et" : "en"; }
+
+  /* ---------- the away shift ---------- */
+  var awayDays = 0;
+  (function shiftIfAway(){
+    var t = today();
+    if (state.lastDay && state.lastDay !== t){
+      var gap = daysBetween(state.lastDay, t);
+      var missed = gap - 1;
+      if (missed >= 2){
+        var ms = missed * DAY;
+        for (var k in state.boxes) state.boxes[k].t += ms;
+        if (state.nextTest) state.nextTest += ms;
+        awayDays = missed;
+      }
+    }
+    state.lastDay = t;
+    save();
+  })();
+
+  /* ---------- the day ---------- */
+  function warmDone(){ return !!(state.warm && state.warm.date === today()); }
+  function blocked(){ return dueList().length >= BLOCK_FLOOR; }
+  function clearedToday(){ return state.cleared[state.cleared.length-1] === today(); }
+  function markCleared(){
+    var t = today();
+    if (clearedToday()) return;
+    if (dueList().length > 0) return;
+    if (!(warmDone() || state.lastAct === t)) return;
+    state.streak = (state.cleared[state.cleared.length-1] === dayBefore(t,1)) ? (state.streak || 0) + 1 : 1;
+    state.cleared.push(t);
+    if (state.cleared.length > 30) state.cleared = state.cleared.slice(-30);
+    ramp();
+    save();
+  }
+  function ramp(){
+    var t = today();
+    if (state.lastRamp === t || state.dose >= DOSE_MAX) return;
+    var n = 0;
+    for (var k = 0; k < 7; k++) if (state.cleared.indexOf(dayBefore(t, k)) > -1) n++;
+    if (n >= 5){ state.dose = Math.min(state.dose + 2, DOSE_MAX); state.lastRamp = t; }
+  }
+  function testMaterial(){
+    return seenList().filter(function(i){ return ORDPOS[i] > state.testedUpto; });
+  }
+  function testState(){
+    if (state.repair.length) return { kind:"repair", n:state.repair.length };
+    var mat = testMaterial();
+    if (mat.length < TEST_MIN_WORDS) return { kind:"waiting", need:TEST_MIN_WORDS - mat.length };
+    if (Date.now() < state.nextTest) return { kind:"soon", at:state.nextTest };
+    if (blocked()) return { kind:"blocked", mat:mat };
+    return { kind:"ready", mat:mat };
+  }
+
+  /* ---------- speech ---------- */
+  var voice = null;
+  var daVoices = [];
+  function quality(v){
+    var id = ((v.voiceURI || "") + " " + (v.name || "")).toLowerCase();
+    if (id.indexOf("premium") > -1) return 3;
+    if (/enhanced|neural|natural|mejorad|amélior|erweitert|forbedret|migliorat/.test(id)) return 2;
+    return 1;
+  }
+  function voiceLabel(v){
+    var q = quality(v);
+    var name = (v.name || "Danish").replace(/\s*\([^)]*\)\s*$/, "");
+    return name + (q === 3 ? " (Premium)" : q === 2 ? " (Enhanced)" : " (basic)");
+  }
+  function pickVoice(){
+    if (!window.speechSynthesis) return null;
+    var vs = window.speechSynthesis.getVoices() || [];
+    daVoices = vs.filter(function(v){ return (v.lang||"").toLowerCase().replace("_","-").indexOf("da") === 0; });
+    daVoices.sort(function(a,b){ return quality(b) - quality(a); });
+    var saved = null;
+    try { saved = localStorage.getItem(KEY + "-voiceURI"); } catch(e){}
+    var chosen = null;
+    if (saved) daVoices.forEach(function(v){ if ((v.voiceURI || v.name) === saved) chosen = v; });
+    voice = chosen || daVoices[0] || null;
+    renderVoiceRow();
+    return voice;
+  }
+  function renderVoiceRow(){
+    var row = document.getElementById("voiceRow"), sel = document.getElementById("voiceSel");
+    if (!row || !sel) return;
+    if (recordings || !daVoices.length){ row.hidden = true; return; }
+    row.hidden = false;
+    sel.innerHTML = "";
+    daVoices.forEach(function(v, n){
+      var o = document.createElement("option");
+      o.value = String(n); o.textContent = voiceLabel(v);
+      if (v === voice) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+  if (window.speechSynthesis){
+    pickVoice();
+    window.speechSynthesis.onvoiceschanged = function(){ pickVoice(); checkVoice(); };
+  }
+  function voiceOK(){ return recordings || !!voice; }
+  function speak(text, slow){
+    if (!window.speechSynthesis || !text) return;
+    try {
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = "da-DK";
+      if (voice) u.voice = voice;
+      u.rate = slow ? 0.72 : 0.92;
+      window.speechSynthesis.speak(u);
+    } catch(e){}
+  }
+  /* ---------- recorded audio (optional files next to the page) ---------- */
+  var REC = { w:{}, s:{} }, recState = {}, recWait = {}, recordings = false, player = null, sayToken = 0;
+  var SILENT = "data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//OEwAAAAAAAAAAAAEluZm8AAAAPAAAABwAAA2AAVVVVVVVVVVVVVVVVVVVxcXFxcXFxcXFxcXFxcY6Ojo6Ojo6Ojo6Ojo6Oqqqqqqqqqqqqqqqqqqqqx8fHx8fHx8fHx8fHx8fj4+Pj4+Pj4+Pj4+Pj4///////////////////AAAAAExhdmM2MC4zMQAAAAAAAAAAAAAAACQEIAAAAAAAAANgmVBi7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NExAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExFMAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExKYAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExKwAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExKwAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+  window.__tusindAudio = function(kind, map){
+    if (kind !== "w" && kind !== "s") return;
+    var n = 0;
+    for (var k in map){ REC[kind][k] = map[k]; n++; }
+    if (kind === "w" && n && !recordings){ recordings = true; setTimeout(onRecordings, 0); }
+  };
+  function chunkOf(i){ return Math.floor(ORDPOS[i] / 100); }
+  function loadChunk(kind, c, cb){
+    var key = kind + c;
+    if (recState[key] === "done" || recState[key] === "missing"){ if (cb) cb(); return; }
+    if (cb) (recWait[key] = recWait[key] || []).push(cb);
+    if (recState[key] === "loading") return;
+    recState[key] = "loading";
+    var el = document.createElement("script");
+    el.src = "audio-" + kind + c + ".js";
+    el.async = true;
+    function fin(ok){
+      recState[key] = ok ? "done" : "missing";
+      var list = recWait[key] || []; recWait[key] = [];
+      list.forEach(function(f){ try { f(); } catch(e){} });
+    }
+    el.onload = function(){ fin(true); };
+    el.onerror = function(){ fin(false); };
+    (document.head || document.body).appendChild(el);
+  }
+  function preload(kind, indices){
+    var seenC = {};
+    indices.forEach(function(i){ var c = chunkOf(i); if (!seenC[c]){ seenC[c] = 1; loadChunk(kind, c); } });
+  }
+  function unlockAudio(){
+    try {
+      if (!player){ player = new Audio(); player.preload = "auto"; }
+      if (player.__unlocked) return;
+      player.src = SILENT;
+      var p = player.play();
+      if (p && p.then) p.then(function(){ player.__unlocked = true; }).catch(function(){});
+    } catch(e){}
+  }
+  function playRec(uri, slow){
+    try {
+      if (!player){ player = new Audio(); player.preload = "auto"; }
+      if (window.speechSynthesis) try { window.speechSynthesis.cancel(); } catch(e){}
+      player.pause();
+      player.src = uri;
+      player.playbackRate = slow ? 0.8 : 1;
+      var p = player.play();
+      if (p && p.catch) p.catch(function(){});
+      return true;
+    } catch(e){ return false; }
+  }
+  function sayRec(kind, i, text, slow){
+    var tok = ++sayToken, uri = REC[kind][i];
+    if (uri){ playRec(uri, slow); return; }
+    var key = kind + chunkOf(i);
+    if (recState[key] === "missing"){ speak(text, slow); return; }
+    loadChunk(kind, chunkOf(i), function(){
+      if (tok !== sayToken) return;
+      if (REC[kind][i]) playRec(REC[kind][i], slow); else speak(text, slow);
+    });
+  }
+  function sayWord(i, slow){ sayRec("w", i, W[i][0], slow); }
+  function saySentence(i){ sayRec("s", i, W[i][4], false); }
+  function onRecordings(){ renderVoiceRow(); checkVoice(); }
+
+  document.getElementById("voiceSel").addEventListener("change", function(e){
+    var v = daVoices[+e.target.value];
+    if (!v) return;
+    voice = v;
+    try { localStorage.setItem(KEY + "-voiceURI", v.voiceURI || v.name); } catch(err){}
+    speak("Hej, jeg hedder Sara. Hvordan går det?");
+  });
+  document.getElementById("voiceTry").addEventListener("click", function(){
+    speak("Hej, hvordan går det? Jeg lærer dansk.");
+  });
+  var noteEl = document.getElementById("voiceNote"), noteTxt = document.getElementById("voiceNoteText");
+  var noteDismissed = false;
+  try { noteDismissed = localStorage.getItem(KEY + "-voice") === "1"; } catch(e){}
+  function checkVoice(){
+    if (!noteEl) return;
+    if (recordings){ if (storageOK) noteEl.hidden = true; return; }
+    if (noteDismissed) return;
+    if (!window.speechSynthesis){ noteTxt.textContent = "This browser cannot read Danish out loud, so listening questions are off."; noteEl.hidden = false; return; }
+    var vs = window.speechSynthesis.getVoices() || [];
+    if (vs.length && !voice){
+      noteEl.hidden = false;
+      noteTxt.textContent = "No Danish voice on this iPhone, so listening questions are switched off. Add one in Settings, Accessibility, Spoken Content, Voices, Danish.";
+    } else if (voice && quality(voice) === 1){
+      noteEl.hidden = false;
+      noteTxt.textContent = "You are using the basic Danish voice. For a far more natural one, go to Settings, Accessibility, Spoken Content, Voices, Danish, and download a voice marked Enhanced. On a phone in Spanish: Ajustes, Accesibilidad, Contenido leído, Voces, Danés, and pick one marked Mejorada.";
+    } else {
+      noteEl.hidden = true;
+    }
+  }
+  document.getElementById("voiceNoteClose").addEventListener("click", function(){
+    noteDismissed = true; noteEl.hidden = true;
+    try { localStorage.setItem(KEY + "-voice", "1"); } catch(e){}
+  });
+
+  /* ---------- helpers ---------- */
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]; }); }
+  function shuffle(a){ for (var i = a.length-1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var views = { home:document.getElementById("home"), study:document.getElementById("study"), quiz:document.getElementById("quiz"), browse:document.getElementById("browse") };
+  function show(name){
+    for (var k in views) views[k].hidden = (k !== name);
+    document.getElementById("navWords").hidden = (name === "browse");
+    document.getElementById("navHome").hidden = (name === "home");
+    window.scrollTo(0, 0);
+  }
+  function speakerBtn(i, word){
+    return '<button class="speak sm" data-i="' + i + '" aria-label="Hear ' + esc(word) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg></button>';
+  }
+
+  /* ---------- home ---------- */
+  function renderHome(){
+    var lc = learnedCount();
+    document.getElementById("learnedCount").textContent = lc + " / " + W.length;
+    document.getElementById("learnedBar").style.width = (lc / W.length * 100) + "%";
+    var sEl = document.getElementById("streak");
+    sEl.hidden = !(state.streak > 1);
+    sEl.textContent = state.streak + " days in a row";
+
+    var dl = dueList(), isBlocked = blocked();
+
+    var wb = document.getElementById("warmBtn"), pool = seenList();
+    if (pool.length < 4){
+      wb.hidden = true;
+    } else {
+      wb.hidden = false;
+      wb.className = "btn " + (warmDone() ? "btn-done" : "btn-primary");
+      document.getElementById("warmLabel").textContent = warmDone() ? "Warm-up done today" : "Dagens opvarmning";
+      document.getElementById("warmSub").textContent = warmDone()
+        ? "You scored " + state.warm.score + " out of " + state.warm.total + ". Tap to go again."
+        : Math.min(WARM_Q, pool.length) + " questions, and the due words count first";
+      wb.onclick = startWarm;
+    }
+
+    var rb = document.getElementById("reviewBtn");
+    rb.disabled = !dl.length;
+    rb.className = "btn " + (dl.length ? (warmDone() ? "btn-primary" : "btn-second") : "btn-locked");
+    document.getElementById("reviewLabel").textContent = dl.length ? dl.length + (dl.length === 1 ? " word is due" : " words are due") : "Nothing due";
+    document.getElementById("reviewSub").textContent = dl.length ? "Words coming back on schedule" : nextDueText();
+    rb.onclick = dl.length ? startReview : function(){};
+
+    var nb = document.getElementById("newBtn");
+    var fresh = nextNew(state.dose);
+    if (!fresh.length){
+      nb.disabled = true; nb.className = "btn btn-locked";
+      document.getElementById("newLabel").textContent = "All 1000 words met";
+      document.getElementById("newSub").textContent = "Nothing new left, only revision from here";
+    } else if (isBlocked){
+      nb.disabled = true; nb.className = "btn btn-locked";
+      document.getElementById("newLabel").textContent = "Locked";
+      document.getElementById("newSub").textContent = "Clear the " + dl.length + " words due and today's " + state.dose + " new words unlock";
+    } else {
+      nb.disabled = false; nb.className = "btn btn-second";
+      document.getElementById("newLabel").textContent = fresh.length + " new words";
+      document.getElementById("newSub").textContent = fresh.slice(0,3).map(function(i){ return W[i][0]; }).join(", ") + (fresh.length > 3 ? " and more" : "");
+      nb.onclick = startNew;
+    }
+
+    var tb = document.getElementById("testBtn"), ts = testState();
+    tb.disabled = true; tb.className = "btn btn-locked"; tb.onclick = function(){};
+    var last = state.tests[state.tests.length-1];
+    var lastTxt = last ? "Last test: " + last.score + " out of " + last.total + ". " : "";
+    if (ts.kind === "repair"){
+      tb.disabled = false; tb.className = "btn btn-primary";
+      document.getElementById("testLabel").textContent = "Revise " + ts.n + " missed words";
+      document.getElementById("testSub").textContent = "Do this before the next test";
+      tb.onclick = startRepair;
+    } else if (ts.kind === "ready"){
+      tb.disabled = false; tb.className = "btn btn-second";
+      document.getElementById("testLabel").textContent = "Test ready";
+      document.getElementById("testSub").textContent = lastTxt + TEST_Q + " questions on your last " + ts.mat.length + " words, " + TEST_PASS + " to pass";
+      tb.onclick = startTest;
+    } else if (ts.kind === "blocked"){
+      document.getElementById("testLabel").textContent = "Test waiting";
+      document.getElementById("testSub").textContent = "Clear the " + dl.length + " words due first";
+    } else if (ts.kind === "soon"){
+      var h = Math.max(1, Math.round((state.nextTest - Date.now()) / 3600000));
+      document.getElementById("testLabel").textContent = "Next test in " + (h >= 24 ? Math.round(h/24) + " days" : h + " hours");
+      document.getElementById("testSub").textContent = lastTxt + "Tests come every two days";
+    } else {
+      document.getElementById("testLabel").textContent = "Next test needs " + ts.need + " more words";
+      document.getElementById("testSub").textContent = lastTxt + "A test covers what you have met since the last one";
+    }
+
+    document.getElementById("pace").textContent =
+      "Your pace: " + state.dose + " new words a day. " +
+      (state.dose < DOSE_MAX ? "Clear five days out of seven and it goes up by two." : "That is the maximum.");
+
+    var an = document.getElementById("awayNote");
+    if (awayDays){
+      an.hidden = false;
+      document.getElementById("awayText").textContent = "You were away " + awayDays + " days, so the whole schedule moved " + awayDays + " days with you. Nothing has piled up.";
+    } else an.hidden = true;
+  }
+  document.getElementById("awayClose").addEventListener("click", function(){ awayDays = 0; document.getElementById("awayNote").hidden = true; });
+  function nextDueText(){
+    var soonest = Infinity;
+    for (var i = 0; i < W.length; i++) if (seen(i) && box(i) < 6){ var d = dueAt(i); if (d < soonest) soonest = d; }
+    if (soonest === Infinity) return "Take some new words and they start coming back here.";
+    var days = Math.ceil((soonest - Date.now()) / DAY);
+    return days <= 1 ? "The next words come back tomorrow." : "The next words come back in " + days + " days.";
+  }
+
+  /* ---------- flashcards ---------- */
+  var queue = [], pos = 0, mode = "new", revealed = false, repeats = {};
+  function openStudy(title){
+    repeats = {}; pos = 0;
+    unlockAudio(); preload("w", queue); preload("s", queue);
+    document.getElementById("studyTitle").textContent = title;
+    document.getElementById("cardArea").hidden = false;
+    document.getElementById("donePanel").hidden = true;
+    show("study"); renderCard();
+  }
+  function startNew(){ mode = "new"; queue = nextNew(state.dose); openStudy("Nye ord"); }
+  function startReview(){ mode = "review"; queue = dueList(); openStudy("Revision"); }
+  function startRepair(){ mode = "repair"; queue = state.repair.slice(); openStudy("Repair"); }
+  function renderCard(){
+    if (pos >= queue.length){ finishStudy(); return; }
+    var w = W[queue[pos]];
+    revealed = false;
+    document.getElementById("cardTag").textContent = w[3];
+    document.getElementById("cardWord").textContent = w[0];
+    document.getElementById("cardEn").textContent = w[1];
+    document.getElementById("cardEs").textContent = w[2];
+    document.getElementById("cardExDa").textContent = w[4];
+    document.getElementById("cardExEn").textContent = w[5];
+    document.getElementById("answer").hidden = true;
+    document.getElementById("tapNote").hidden = false;
+    document.getElementById("rateRow").hidden = false;
+    document.getElementById("judgeRow").hidden = true;
+    document.getElementById("studyCount").textContent = (pos+1) + " / " + queue.length;
+    document.getElementById("studyBar").style.width = (pos / queue.length * 100) + "%";
+    sayWord(queue[pos]);
+  }
+  function reveal(){
+    if (revealed) return;
+    revealed = true;
+    document.getElementById("answer").hidden = false;
+    document.getElementById("tapNote").hidden = true;
+    document.getElementById("rateRow").hidden = true;
+    document.getElementById("judgeRow").hidden = false;
+  }
+  function answerCard(good){
+    var idx = queue[pos];
+    grade(idx, good);
+    if (!good && (repeats[idx]||0) < 2){ repeats[idx] = (repeats[idx]||0) + 1; queue.splice(Math.min(pos+4, queue.length), 0, idx); }
+    pos++; renderCard();
+  }
+  function finishStudy(){
+    document.getElementById("cardArea").hidden = true;
+    document.getElementById("studyBar").style.width = "100%";
+    if (mode === "repair"){ state.repair = []; save(); }
+    markCleared();
+    var dl = dueList(), nb = document.getElementById("doneNext");
+    nb.hidden = true;
+    if (mode === "new"){
+      document.getElementById("doneText").textContent = "Those " + queue.length + " words start coming back tomorrow.";
+    } else if (mode === "review"){
+      document.getElementById("doneText").textContent = dl.length ? dl.length + " still due." : "Revision done, nothing else is due today.";
+      var fresh = nextNew(state.dose);
+      if (!dl.length && fresh.length){
+        nb.hidden = false;
+        document.getElementById("doneNextLabel").textContent = "Take today's " + fresh.length + " new words";
+        nb.onclick = startNew;
+      }
+    } else {
+      document.getElementById("doneText").textContent = "Those words are back in your revision. The next test covers them again.";
+      var ts = testState();
+      if (ts.kind === "ready"){
+        nb.hidden = false;
+        document.getElementById("doneNextLabel").textContent = "Take the test";
+        nb.onclick = startTest;
+      }
+    }
+    document.getElementById("donePanel").hidden = false;
+    renderHome();
+  }
+  document.getElementById("card").addEventListener("click", function(e){
+    if (e.target.closest("button")) return;
+    revealed ? answerCard(true) : reveal();
+  });
+  document.getElementById("cardSpeak").addEventListener("click", function(e){ e.stopPropagation(); unlockAudio(); sayWord(queue[pos], true); });
+  document.getElementById("exSpeak").addEventListener("click", function(e){ e.stopPropagation(); unlockAudio(); saySentence(queue[pos]); });
+  document.getElementById("showBtn").addEventListener("click", reveal);
+  document.getElementById("againBtn").addEventListener("click", function(){ answerCard(false); });
+  document.getElementById("goodBtn").addEventListener("click", function(){ answerCard(true); });
+  document.getElementById("exitStudy").addEventListener("click", function(){ markCleared(); renderHome(); show("home"); });
+  document.getElementById("backHomeBtn").addEventListener("click", function(){ renderHome(); show("home"); });
+
+  /* ---------- quiz ---------- */
+  var qs = [], qi = 0, qScore = 0, qMissed = [], qKind = "warm", qPool = [], qLocked = false;
+  function distractors(i, field){
+    var band = [], p = ORDPOS[i];
+    for (var k = Math.max(0, p-70); k < Math.min(ORDER.length, p+70); k++){
+      var j = ORDER[k];
+      if (j !== i && W[j][field] !== W[i][field]) band.push(j);
+    }
+    shuffle(band);
+    var same = band.filter(function(j){ return W[j][3] === W[i][3]; });
+    var pick = same.slice(0,2).concat(band.slice(0,8)), out = [], used = {};
+    used[W[i][field]] = 1;
+    for (var k2 = 0; k2 < pick.length && out.length < 3; k2++){
+      var t = W[pick[k2]][field];
+      if (used[t]) continue;
+      used[t] = 1; out.push(pick[k2]);
+    }
+    while (out.length < 3){
+      var r = Math.floor(Math.random()*W.length);
+      if (r !== i && !used[W[r][field]]){ used[W[r][field]] = 1; out.push(r); }
+    }
+    return out;
+  }
+  function buildQuiz(pool, count, opts){
+    opts = opts || {};
+    var priority = (opts.priority || []).filter(function(i){ return pool.indexOf(i) > -1; });
+    var rest = shuffle(pool.filter(function(i){ return priority.indexOf(i) === -1; }));
+    var picks = shuffle(priority.slice(0, count)).concat(rest).slice(0, count);
+    var typeBias = opts.typeBias == null ? 0.3 : opts.typeBias;
+    return picks.map(function(i){
+      var q = { i:i }, r = Math.random();
+      if (voiceOK() && r < LISTEN_SHARE){
+        q.kind = Math.random() < 0.25 ? "listen-type" : "listen-mc";
+        if (q.kind === "listen-mc") q.options = shuffle(distractors(i, 0).concat([i]));
+      } else if (isNoun(i) && Math.random() < GENDER_SHARE){
+        q.kind = "gender";
+      } else if (Math.random() < typeBias){
+        q.kind = "type";
+      } else if (Math.random() < 0.55){
+        q.kind = "mc-da"; q.options = shuffle(distractors(i, 1).concat([i]));
+      } else {
+        q.kind = "mc-mean"; q.options = shuffle(distractors(i, 0).concat([i]));
+      }
+      return q;
+    });
+  }
+  function startWarm(){
+    var pool = dueList();
+    var extra = seenList().filter(function(i){ return pool.indexOf(i) === -1; });
+    extra.sort(function(a,b){ return dueAt(a) - dueAt(b); });
+    qPool = pool.concat(extra).slice(0, Math.max(WARM_Q*3, 30));
+    if (qPool.length < 4) return;
+    qKind = "warm";
+    qs = buildQuiz(qPool, Math.min(WARM_Q, qPool.length), { priority: pool.slice(0, WARM_Q) });
+    document.getElementById("quizTitle").textContent = "Dagens opvarmning";
+    openQuiz();
+  }
+  function startTest(){
+    var ts = testState();
+    if (ts.kind !== "ready") return;
+    qKind = "test"; qPool = ts.mat;
+    var attempts = state.lastMissed.length ? 1 : 0;
+    qs = buildQuiz(qPool, Math.min(TEST_Q, qPool.length), { priority: state.lastMissed.slice(), typeBias: 0.3 + attempts * 0.15 });
+    document.getElementById("quizTitle").textContent = "Prøve";
+    openQuiz();
+  }
+  function openQuiz(){
+    qi = 0; qScore = 0; qMissed = [];
+    unlockAudio(); preload("w", qs.map(function(q){ return q.i; }));
+    document.getElementById("quizArea").hidden = false;
+    document.getElementById("quizResult").hidden = true;
+    show("quiz"); renderQ();
+  }
+  function renderQ(){
+    if (qi >= qs.length){ finishQuiz(); return; }
+    var q = qs[qi], w = W[q.i];
+    qLocked = false;
+    var opts = document.getElementById("qOpts"), verdict = document.getElementById("qVerdict");
+    verdict.hidden = true; verdict.innerHTML = "";
+    opts.innerHTML = ""; opts.hidden = true; opts.className = "opts";
+    document.getElementById("qType").hidden = true;
+    document.getElementById("qInput").value = "";
+    document.getElementById("qSub").hidden = true;
+    document.getElementById("qSpeak").hidden = true;
+    document.getElementById("qSpeak").className = "speak";
+    var prompt = document.getElementById("qPrompt");
+    prompt.className = "qprompt"; prompt.hidden = false;
+    document.getElementById("quizCount").textContent = (qi+1) + " / " + qs.length;
+    document.getElementById("quizBar").style.width = (qi / qs.length * 100) + "%";
+
+    if (q.kind === "listen-mc" || q.kind === "listen-type"){
+      document.getElementById("qAsk").textContent = "Which word do you hear?";
+      prompt.hidden = true;
+      var sp = document.getElementById("qSpeak");
+      sp.hidden = false; sp.className = "speak big";
+      document.getElementById("qSub").textContent = "Tap to hear it again";
+      document.getElementById("qSub").hidden = false;
+      if (q.kind === "listen-mc"){
+        opts.hidden = false;
+        q.options.forEach(function(j, n){ opts.appendChild(optBtn(W[j][0], j === q.i, n)); });
+      } else {
+        document.getElementById("qType").hidden = false;
+      }
+      sayWord(q.i);
+    } else if (q.kind === "gender"){
+      document.getElementById("qAsk").textContent = "en eller et?";
+      prompt.textContent = w[0];
+      opts.hidden = false; opts.className = "opts pair";
+      shuffle(["en","et"]).forEach(function(g, n){ opts.appendChild(optBtn(g, g === gender(q.i), n, true)); });
+      sayWord(q.i);
+    } else if (q.kind === "mc-da"){
+      document.getElementById("qAsk").textContent = "What does this mean?";
+      prompt.textContent = w[0];
+      document.getElementById("qSpeak").hidden = false;
+      opts.hidden = false;
+      q.options.forEach(function(j, n){ opts.appendChild(optBtn(W[j][1] + " · " + W[j][2], j === q.i, n)); });
+      sayWord(q.i);
+    } else if (q.kind === "mc-mean"){
+      document.getElementById("qAsk").textContent = "Which word is it?";
+      prompt.textContent = w[1]; prompt.className = "qprompt small";
+      document.getElementById("qSub").textContent = w[2];
+      document.getElementById("qSub").hidden = false;
+      opts.hidden = false;
+      q.options.forEach(function(j, n){ opts.appendChild(optBtn(W[j][0], j === q.i, n)); });
+    } else {
+      document.getElementById("qAsk").textContent = "Write it in Danish";
+      prompt.textContent = w[1]; prompt.className = "qprompt small";
+      document.getElementById("qSub").textContent = w[2];
+      document.getElementById("qSub").hidden = false;
+      document.getElementById("qType").hidden = false;
+    }
+  }
+  function optBtn(text, right, n, bare){
+    var b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = bare ? esc(text) : '<span class="k">' + (n+1) + '</span><span>' + esc(text) + '</span>';
+    b.onclick = function(){ judge(right, b); };
+    return b;
+  }
+  function plain(s){ return String(s).toLowerCase().trim().replace(/[.!?,]+$/, "").replace(/\s+/g, " "); }
+  function fold(s){
+    var t = plain(s).replace(/æ/g,"ae").replace(/ø/g,"oe").replace(/å/g,"aa");
+    try { t = t.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch(e){}
+    return t;
+  }
+  function checkTyped(txt, answer){
+    var a = plain(txt), parts = answer.split("/").map(plain);
+    if (a === plain(answer) || parts.indexOf(a) > -1) return "exact";
+    var fa = fold(txt), fparts = answer.split("/").map(fold);
+    if (fa === fold(answer) || fparts.indexOf(fa) > -1) return "close";
+    return "no";
+  }
+  document.getElementById("qType").addEventListener("submit", function(e){
+    e.preventDefault();
+    if (qLocked) return;
+    var w = W[qs[qi].i], res = checkTyped(document.getElementById("qInput").value, w[0]);
+    judge(res !== "no", null, res === "close" ? w[0] : null);
+  });
+  function judge(right, btn, closeSpelling){
+    if (qLocked) return;
+    qLocked = true;
+    var q = qs[qi], w = W[q.i];
+    grade(q.i, right);
+    if (right) qScore++; else if (qMissed.indexOf(q.i) === -1) qMissed.push(q.i);
+    var opts = document.getElementById("qOpts");
+    Array.prototype.forEach.call(opts.children, function(c){ c.disabled = true; });
+    if (q.options) q.options.forEach(function(j, n){ if (j === q.i) opts.children[n].classList.add("right"); });
+    if (q.kind === "gender") Array.prototype.forEach.call(opts.children, function(c){ if (c.textContent.trim() === gender(q.i)) c.classList.add("right"); });
+    if (!right && btn) btn.classList.add("wrong");
+    var v = document.getElementById("qVerdict");
+    v.className = "verdict " + (right ? "good" : "bad");
+    var tail = q.kind === "gender" ? esc(gender(q.i) + " " + w[0]) : esc(w[0]) + " · " + esc(w[1]);
+    v.innerHTML = (right
+        ? (closeSpelling ? "Almost. It is spelled <b>" + esc(closeSpelling) + "</b>" : "<b>Rigtigt!</b> " + tail)
+        : "The answer is <b>" + tail + "</b>")
+      + speakerBtn(q.i, w[0]) + '<button class="nextbtn" id="qNext">Next</button>';
+    v.hidden = false;
+    document.getElementById("qNext").onclick = nextQ;
+    var at = qi;
+    if (right && !closeSpelling) setTimeout(function(){ if (qLocked && qi === at) nextQ(); }, 900);
+  }
+  function nextQ(){ qi++; renderQ(); }
+  function finishQuiz(){
+    document.getElementById("quizArea").hidden = true;
+    document.getElementById("quizBar").style.width = "100%";
+    var pct = qs.length ? qScore / qs.length : 0;
+    document.getElementById("resScore").textContent = qScore + "/" + qs.length;
+    var again = document.getElementById("resAgain");
+    again.hidden = false;
+    again.querySelector("b").textContent = "Try it again";
+    again.onclick = function(){ qs = buildQuiz(qPool, qs.length); openQuiz(); };
+
+    if (qKind === "test"){
+      var passed = qScore >= TEST_PASS;
+      state.tests.push({ date:Date.now(), score:qScore, total:qs.length, pass:passed });
+      if (state.tests.length > 20) state.tests = state.tests.slice(-20);
+      state.nextTest = Date.now() + TEST_GAP;
+      state.lastMissed = qMissed.slice();
+      if (passed){
+        state.repair = [];
+        var mx = state.testedUpto;
+        seenList().forEach(function(i){ if (ORDPOS[i] > mx) mx = ORDPOS[i]; });
+        state.testedUpto = mx;
+        document.getElementById("resTitle").textContent = "Bestået!";
+        document.getElementById("resText").textContent = "The next test comes in two days and moves on to newer words.";
+        again.hidden = true;
+      } else {
+        state.repair = qMissed.slice();
+        state.dose = Math.max(DOSE_MIN, state.dose - 2);
+        document.getElementById("resTitle").textContent = "Not quite yet";
+        document.getElementById("resText").textContent = "You needed " + TEST_PASS + " to pass. Revise the " + qMissed.length +
+          " missed words now. Your pace drops to " + state.dose + " new words a day, and these words come back inside the next test.";
+        again.querySelector("b").textContent = "Revise the " + qMissed.length + " missed words";
+        again.onclick = startRepair;
+      }
+      save();
+    } else {
+      var t = today();
+      state.warm = { date:t, score:qScore, total:qs.length };
+      save();
+      document.getElementById("resTitle").textContent = pct >= 0.8 ? "Flot!" : "Warm-up done";
+      var dl = dueList();
+      document.getElementById("resText").textContent = dl.length
+        ? dl.length + " words are still due today."
+        : "Nothing else is due today.";
+    }
+    markCleared();
+
+    var mb = document.getElementById("missedBox"), mr = document.getElementById("missedRows");
+    if (qMissed.length){
+      mr.innerHTML = qMissed.map(function(i){
+        var w = W[i];
+        return '<div class="row"><span class="idx">' + (ORDPOS[i]+1) + '</span><span class="t"><b>' + esc(w[0]) +
+          '</b><span>' + esc(w[1]) + " · " + esc(w[2]) + '</span></span>' + speakerBtn(i, w[0]) + '</div>';
+      }).join("");
+      mb.hidden = false;
+    } else mb.hidden = true;
+    document.getElementById("quizResult").hidden = false;
+    renderHome();
+  }
+  document.getElementById("qSpeak").addEventListener("click", function(){ unlockAudio(); sayWord(qs[qi].i, true); });
+  document.getElementById("exitQuiz").addEventListener("click", function(){ markCleared(); renderHome(); show("home"); });
+  document.getElementById("resHome").addEventListener("click", function(){ renderHome(); show("home"); });
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("button[data-i]") : null;
+    if (b){ unlockAudio(); sayWord(+b.getAttribute("data-i"), true); }
+  });
+  document.addEventListener("keydown", function(e){
+    if (!views.study.hidden){
+      if (e.key === " " || e.key === "Enter"){ e.preventDefault(); revealed ? answerCard(true) : reveal(); }
+      if (e.key === "1" && revealed) answerCard(false);
+      if (e.key === "2" && revealed) answerCard(true);
+      return;
+    }
+    if (!views.quiz.hidden){
+      var opts = document.getElementById("qOpts");
+      if (!opts.hidden && !qLocked){
+        var n = parseInt(e.key, 10);
+        if (n >= 1 && n <= opts.children.length) opts.children[n-1].click();
+      }
+      if (e.key === "Enter" && qLocked) nextQ();
+    }
+  });
+
+  /* ---------- browse ---------- */
+  var rowsEl = document.getElementById("rows");
+  function renderRows(q){
+    q = (q || "").trim().toLowerCase();
+    var out = [], n = 0;
+    for (var k = 0; k < ORDER.length && n < 400; k++){
+      var i = ORDER[k], w = W[i];
+      if (q && (w[0] + " " + w[1] + " " + w[2]).toLowerCase().indexOf(q) === -1) continue;
+      var b = box(i);
+      out.push('<div class="row"><span class="idx">' + (k+1) + '</span>' +
+        '<span class="dot ' + (b >= 3 ? "learned" : b >= 1 ? "seen" : "") + '"></span>' +
+        '<span class="t"><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + " · " + esc(w[2]) + '</span></span>' +
+        speakerBtn(i, w[0]) + '</div>');
+      n++;
+    }
+    rowsEl.innerHTML = out.join("");
+    document.getElementById("browseCount").textContent = n + (n === 400 ? "+ shown" : " shown");
+  }
+  document.getElementById("search").addEventListener("input", function(e){ renderRows(e.target.value); });
+  document.getElementById("navWords").addEventListener("click", function(){ renderRows(document.getElementById("search").value); show("browse"); });
+  document.getElementById("navHome").addEventListener("click", function(){ renderHome(); show("home"); });
+
+  if (!storageOK){
+    var n = document.getElementById("voiceNote");
+    document.getElementById("voiceNoteText").textContent =
+      "This copy of the page cannot save anything on this device, so your progress will be gone when you close it. Open the online version instead.";
+    n.hidden = false;
+  } else checkVoice();
+  renderHome(); renderRows(""); show("home");
+  (function detect(){
+    var first = nextNew(1)[0];
+    if (first == null) first = ORDER[0];
+    loadChunk("w", chunkOf(first));
+    preload("w", dueList().slice(0, 60));
+  })();
+})();
+</script>
+
+</body>
+</html>
